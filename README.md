@@ -84,7 +84,7 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
     List<User> list = ExcelUtils.readExcel(inputStream,tableParam,SysUser.class);
 ```
 
-##### import example1(Excel读取导入):
+##### import example2(Excel读取导入):
 ```
     //说明：读取到数据后可以直接加入数据库
     //列配置
@@ -99,7 +99,7 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
             //保存用户的方法
             userService.saveOrUpdate(user);
         },
-        user -> validate((SysUser)user), //validate为数据验证的方法,比如判断唯一性,非空,长度等,未验证通过的需要返回错误信息,会在失败数据中体现
+        user -> validate((SysUser)user), //validate()为数据验证的方法,比如判断唯一性,非空,长度等,需要返回错误信息,会在失败数据中体现
         index -> System.out.println(index) //执行条数变化的回调方法
      );
      注:返回的是导入失败的数据
