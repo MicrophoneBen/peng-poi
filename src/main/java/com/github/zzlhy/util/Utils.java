@@ -13,8 +13,8 @@ public class Utils {
 
     /**
      * 是否为空
-     *
-     * @return
+     * @param obj obj
+     * @return boolean
      */
     public static boolean isEmpty(Object obj) {
         if (obj == null) {
@@ -59,9 +59,9 @@ public class Utils {
 
     /**
      * 对象转Map
-     * @param obj
-     * @return
-     * @throws Exception
+     * @param obj obj
+     * @return map
+     * @throws IllegalAccessException e
      */
     public static Map<String, Object> objectToMap(Object obj) throws IllegalAccessException {
         if(obj == null){
@@ -80,11 +80,11 @@ public class Utils {
     }
 
     /**
-     * Map转对象
-     * @param map
-     * @param beanClass
-     * @return
-     * @throws Exception
+     *
+     * @param map map
+     * @param beanClass 实体类
+     * @return object
+     * @throws Exception e
      */
     public static Object mapToObject(Map<String, Object> map, Class<?> beanClass) throws Exception {
         if (map == null)

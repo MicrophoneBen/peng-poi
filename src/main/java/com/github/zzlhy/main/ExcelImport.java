@@ -45,6 +45,13 @@ public class ExcelImport {
      * @param validateDataHandler 效验数据的方法
      * @param indexChangeHandler 处理条数变化的回调
      * @return 导入失败的数据
+     * @throws IOException e
+     * @throws IllegalAccessException e
+     * @throws InstantiationException e
+     * @throws IntrospectionException e
+     * @throws InvocationTargetException e
+     * @throws ParseException e
+     * @throws InvalidFormatException e
      */
     public static List<Map<String,Object>> importExcel(InputStream stream, TableParam tableParam, Class<?> clazz, SaveDataHandler saveDataHandler, ValidateDataHandler validateDataHandler, IndexChangeHandler indexChangeHandler) throws IOException, IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException, ParseException, InvalidFormatException {
         //数据开始行
@@ -138,6 +145,13 @@ public class ExcelImport {
      * @param saveDataHandler 保存数据的方法
      * @param validateDataHandler 效验数据的方法
      * @return 导入失败的数据
+     * @throws IOException e
+     * @throws IllegalAccessException e
+     * @throws InstantiationException e
+     * @throws IntrospectionException e
+     * @throws InvocationTargetException e
+     * @throws ParseException e
+     * @throws InvalidFormatException e
      */
     public static List<?> importExcel(InputStream stream, TableParam tableParam, Class<?> clazz, SaveDataHandler saveDataHandler, ValidateDataHandler validateDataHandler) throws IOException, IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException, ParseException, InvalidFormatException {
         return importExcel(stream,tableParam,clazz,saveDataHandler,validateDataHandler,null);
@@ -149,6 +163,13 @@ public class ExcelImport {
      * @param tableParam Excel配置对象
      * @param clazz Class
      * @return 返回读取到的数据列表
+     * @throws IOException e
+     * @throws IllegalAccessException e
+     * @throws InstantiationException e
+     * @throws IntrospectionException e
+     * @throws InvocationTargetException e
+     * @throws ParseException e
+     * @throws InvalidFormatException e
      */
     public static List<?> readExcel(InputStream stream,TableParam tableParam, Class<?> clazz) throws IOException, IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException, ParseException, InvalidFormatException {
         List<Object> list=new ArrayList();
@@ -195,7 +216,7 @@ public class ExcelImport {
     /**
      * 获取列的值
      * @param cell
-     * @return
+     * @return 值
      */
     private static String getCellValue(Cell cell){
         String value = "";
@@ -238,6 +259,9 @@ public class ExcelImport {
      * @param instance 对象
      * @param format 日期格式化字符串
      * @param value 值
+     * @throws InvocationTargetException e
+     * @throws IllegalAccessException e
+     * @throws ParseException e
      */
     private static void setValue(Method writeMethod,Class<?> propertyType,Object instance,String format,String value) throws InvocationTargetException, IllegalAccessException, ParseException {
         //判断类型---说明：如果传进来为空或空字符串时,统一把值设置为(Object)null,否则invoke赋值会报错

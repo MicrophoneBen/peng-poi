@@ -7,15 +7,15 @@ package com.github.zzlhy.func;
 public interface ConvertValue {
     /**
      * 导出时,值的转换
-     * @param obj
-     * @return
+     * @param obj obj
+     * @return 值
      */
     String convert(Object obj);
 
     /**
      * 导入时,值转换
-     * @param obj
-     * @return
+     * @param obj obj
+     * @return 值
      */
     String convert(String obj);
 }

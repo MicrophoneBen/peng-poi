@@ -28,46 +28,46 @@
     </dependencies>
 
 
-    <!--<distributionManagement>-->
-        <!--<snapshotRepository>-->
-            <!--<id>ossrh</id>-->
-            <!--<url>https://oss.sonatype.org/content/repositories/snapshots/</url>-->
-        <!--</snapshotRepository>-->
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
         <!--<repository>-->
             <!--<id>ossrh</id>-->
             <!--<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
         <!--</repository>-->
-    <!--</distributionManagement>-->
-
-    <distributionManagement>
-        <repository>
-            <id>releases</id>
-            <name>User Project Release</name>
-            <url>http://localhost:8081/nexus/content/repositories/releases/</url>
-        </repository>
-
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>User Project SNAPSHOTS</name>
-            <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
-        </snapshotRepository>
     </distributionManagement>
 
-    <build>
-        <!--<plugins>-->
-            <!--<plugin>-->
-            <!--<groupId>org.sonatype.plugins</groupId>-->
-            <!--<artifactId>nexus-staging-maven-plugin</artifactId>-->
-            <!--<version>1.6.7</version>-->
-            <!--<extensions>true</extensions>-->
-            <!--<configuration>-->
-            <!--<serverId>ossrh</serverId>-->
-            <!--<nexusUrl>https://oss.sonatype.org/</nexusUrl>-->
-            <!--<autoReleaseAfterClose>true</autoReleaseAfterClose>-->
-            <!--</configuration>-->
-            <!--</plugin>-->
+    <!--<distributionManagement>-->
+        <!--<repository>-->
+            <!--<id>releases</id>-->
+            <!--<name>User Project Release</name>-->
+            <!--<url>http://localhost:8081/nexus/content/repositories/releases/</url>-->
+        <!--</repository>-->
 
-        <!--</plugins>-->
+        <!--<snapshotRepository>-->
+            <!--<id>snapshots</id>-->
+            <!--<name>User Project SNAPSHOTS</name>-->
+            <!--<url>http://localhost:8081/nexus/content/repositories/snapshots/</url>-->
+        <!--</snapshotRepository>-->
+    <!--</distributionManagement>-->
+
+    <build>
+        <plugins>
+            <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.6.7</version>
+            <extensions>true</extensions>
+            <configuration>
+            <serverId>ossrh</serverId>
+            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+            </configuration>
+            </plugin>
+
+        </plugins>
     </build>
 
     <profiles>
