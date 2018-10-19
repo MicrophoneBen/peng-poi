@@ -46,7 +46,7 @@ public class ExcelExport {
         }else if(ExcelType.XLS.equals(tableParam.getExcelType())){
             workbook = new HSSFWorkbook();
         }else {
-            workbook = new SXSSFWorkbook();
+            workbook = new SXSSFWorkbook(100);
         }
 
         /*创建Workbook和Sheet*/
@@ -80,7 +80,7 @@ public class ExcelExport {
         }else if(ExcelType.XLS.equals(tableParam.getExcelType())){
             workbook = new HSSFWorkbook();
         }else {
-            workbook = new SXSSFWorkbook();
+            workbook = new SXSSFWorkbook(100);
         }
 
         /*创建Workbook和Sheet*/

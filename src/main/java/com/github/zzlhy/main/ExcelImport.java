@@ -23,9 +23,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Excel 导入
@@ -48,13 +46,13 @@ public class ExcelImport {
      * @param indexChangeHandler 处理条数变化的回调
      * @return 导入失败的数据
      */
-    public static List<?> importExcel(InputStream stream, TableParam tableParam, Class<?> clazz, SaveDataHandler saveDataHandler, ValidateDataHandler validateDataHandler, IndexChangeHandler indexChangeHandler) throws IOException, IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException, ParseException, InvalidFormatException {
+    public static List<Map<String,Object>> importExcel(InputStream stream, TableParam tableParam, Class<?> clazz, SaveDataHandler saveDataHandler, ValidateDataHandler validateDataHandler, IndexChangeHandler indexChangeHandler) throws IOException, IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException, ParseException, InvalidFormatException {
         //数据开始行
         int startRow=tableParam.getReadRow();
         //列参数配置
         List<Col> cols = tableParam.getCols();
         //失败数据
-        List<Object> failData=new ArrayList();
+        List<Map<String,Object>> failData=new ArrayList();
         //已处理的条数
         int index = 0;
 
@@ -68,6 +66,7 @@ public class ExcelImport {
                 }
                 //创建对象实例
                 Object instance = clazz.newInstance();
+                Map<String, Object> objectMap = new HashMap<String, Object>();
                 //循环赋值
                 for (int j = 0;j < cols.size();j++) {
                     //获取属性
@@ -91,6 +90,7 @@ public class ExcelImport {
 
                     //对象属性赋值
                     setValue(writeMethod,propertyType,instance,cols.get(j).getFormat(),value);
+                    objectMap.put(cols.get(j).getKey(),value);
                 }
 
                 //验证数据并保存数据
@@ -98,19 +98,27 @@ public class ExcelImport {
                     String desc = validateDataHandler.valid(instance);
                     if (Utils.notEmpty(desc)) {
                         //验证未通过的处理
-                        //未通过时,返回到对象的checkDesc属性上
-                        PropertyDescriptor propertyDescriptor = new PropertyDescriptor("checkDesc", clazz);
-                        Method writeMethod = propertyDescriptor.getWriteMethod();
-                        writeMethod.invoke(instance, desc);
-                        failData.add(instance);
+                        objectMap.put("errorMsg",desc);
+                        failData.add(objectMap);
                     } else {
                         //保存数据
-                        saveDataHandler.save(instance);
+                        try {
+                            saveDataHandler.save(instance);
+                        }catch (Exception e){
+                            objectMap.put("errorMsg",e.getMessage());
+                            failData.add(objectMap);
+                        }
                     }
                 }else{
                     //保存数据
-                    saveDataHandler.save(instance);
+                    try {
+                        saveDataHandler.save(instance);
+                    }catch (Exception e){
+                        objectMap.put("errorMsg",e.getMessage());
+                        failData.add(objectMap);
+                    }
                 }
+
                 index++;
                 //处理条数变化回调
                 if(indexChangeHandler != null) {
@@ -142,7 +150,7 @@ public class ExcelImport {
      * @param clazz Class
      * @return 返回读取到的数据列表
      */
-    public static List<?> importExcel(InputStream stream,TableParam tableParam, Class<?> clazz) throws IOException, IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException, ParseException, InvalidFormatException {
+    public static List<?> readExcel(InputStream stream,TableParam tableParam, Class<?> clazz) throws IOException, IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException, ParseException, InvalidFormatException {
         List<Object> list=new ArrayList();
         Workbook workbook=WorkbookFactory.create(stream);
         //获取第一个sheet
@@ -193,7 +201,7 @@ public class ExcelImport {
         String value = "";
         if(cell!=null) {
             //判断格式
-            switch (cell.getCellTypeEnum()) {
+            switch (cell.getCellType()) {
                 case STRING:
                     value = cell.getStringCellValue();
                     break;
