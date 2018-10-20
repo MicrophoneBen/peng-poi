@@ -7,8 +7,11 @@ import com.github.zzlhy.entity.TableParam;
 import com.github.zzlhy.func.ConvertValue;
 import com.github.zzlhy.func.GeneratorDataHandler;
 import com.github.zzlhy.util.Utils;
+import org.apache.poi.hssf.usermodel.DVConstraint;
+import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -206,6 +209,19 @@ public class ExcelExport {
             _row.setHeightInPoints(tableParam.getHeight());
 
             for (int j=0;j<tableParam.getCols().size();j++) {
+                //设置列宽
+                sheet.setColumnWidth(j,tableParam.getCols().get(j).getWidth()*256);
+
+                // 创建行的单元格
+                Cell cell = _row.createCell(j);
+
+                //判断列是否为设置公式的列,设置公式不根据key生成数据,直接写入公式即可
+                if(Utils.notEmpty(tableParam.getCols().get(j).getFormula())){
+                    cell.setCellFormula(tableParam.getCols().get(j).getFormula());
+                    continue;
+                }
+
+
                 //获取属性
                 PropertyDescriptor propertyDescriptor = new PropertyDescriptor(tableParam.getCols().get(j).getKey(), data.get(k).getClass());
                 //获取get方法
@@ -215,11 +231,6 @@ public class ExcelExport {
                 //执行
                 Object result = readMethod.invoke(data.get(k));
 
-                //设置列宽
-                sheet.setColumnWidth(j,tableParam.getCols().get(j).getWidth()*256);
-
-                // 创建行的单元格
-                Cell cell = _row.createCell(j);
                 String format = tableParam.getCols().get(j).getFormat();//获取日期的格式化的格式
                 ConvertValue convertValue = tableParam.getCols().get(j).getConvertValue();//需要转换值的方法对象
                 setCell(cell,result,format,convertValue);
@@ -250,14 +261,21 @@ public class ExcelExport {
             _row.setHeightInPoints(tableParam.getHeight());
 
             for (int j=0;j<tableParam.getCols().size();j++) {
-                //根据Map的key获取value值
-                Object result = data.get(k).get(tableParam.getCols().get(j).getKey());
-
                 //设置列宽
                 sheet.setColumnWidth(j,tableParam.getCols().get(j).getWidth()*256);
 
                 // 创建行的单元格
                 Cell cell = _row.createCell(j);
+
+                //判断列是否为设置公式的列,设置公式不根据key生成数据,直接写入公式即可
+                if(Utils.notEmpty(tableParam.getCols().get(j).getFormula())){
+                    cell.setCellFormula(tableParam.getCols().get(j).getFormula());
+                    continue;
+                }
+
+                //根据Map的key获取value值
+                Object result = data.get(k).get(tableParam.getCols().get(j).getKey());
+
                 String format = tableParam.getCols().get(j).getFormat();//获取日期的格式化的格式
                 ConvertValue convertValue = tableParam.getCols().get(j).getConvertValue();//需要转换值的方法对象
                 setCell(cell,result,format,convertValue);
@@ -290,6 +308,20 @@ public class ExcelExport {
             // 设置单元格内容
             cell.setCellValue(columnParams.get(i).getTitle());
             cell.setCellStyle(style);
+
+            //数据有效性设置(数据格式设置)
+            //int lastRow = 65535;
+            //if(tableParam.getExcelType().equals(ExcelType.XLSX) || tableParam.getExcelType().equals(ExcelType.SXLSX)){
+            //    lastRow = 1048576;
+            //}
+            //CellRangeAddressList regions = new CellRangeAddressList(row.getRowNum(), lastRow, i, i);//选定一个区域  参数：起始行序号，终止行序号，起始列序号，终止列序号
+            ////DVConstraint constraint = DVConstraint.createDateConstraint(DVConstraint.OperatorType.BETWEEN, "1993-01-01", "2014-12-31", "yyyy-MM-dd");
+            ////下拉菜单生成
+            //DVConstraint constraint = DVConstraint.createExplicitListConstraint(new String[] { "C++", "Java", "C#" });
+            //HSSFDataValidation dataValidate = new HSSFDataValidation(regions, constraint);
+            //Sheet sheet = workbook.getSheetAt(workbook.getActiveSheetIndex());
+            //sheet.addValidationData(dataValidate);
+
         }
     }
 

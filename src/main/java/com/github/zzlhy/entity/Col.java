@@ -24,6 +24,9 @@ public class Col {
     //属性值转换其他值方法
     private ConvertValue convertValue;
 
+    //公式或函数(如果设置了公式,则不用检测key)
+    private String formula;
+
     //列样式
     private ColStyle colStyle=new ColStyle();
 
@@ -44,16 +47,22 @@ public class Col {
         this.convertValue = convertValue;
     }
 
-    public Col(String title, String key, int width) {
+    public Col(String title, int width, String formula) {
         this.title = title;
-        this.key = key;
         this.width = width;
+        this.formula = formula;
     }
 
     public Col(String title, String key, String format) {
         this.title = title;
         this.key = key;
         this.format = format;
+    }
+
+    public Col(String title, String key, int width) {
+        this.title = title;
+        this.key = key;
+        this.width = width;
     }
 
     public Col(String title, String key, ConvertValue convertValue) {
@@ -106,6 +115,16 @@ public class Col {
         this.colStyle = colStyle;
     }
 
+    public Col(String title, String key, int width, String format, ConvertValue convertValue, String formula, ColStyle colStyle) {
+        this.title = title;
+        this.key = key;
+        this.width = width;
+        this.format = format;
+        this.convertValue = convertValue;
+        this.formula = formula;
+        this.colStyle = colStyle;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -144,6 +163,14 @@ public class Col {
 
     public void setFormat(String format) {
         this.format = format;
+    }
+
+    public String getFormula() {
+        return formula;
+    }
+
+    public void setFormula(String formula) {
+        this.formula = formula;
     }
 
     public ColStyle getColStyle() {

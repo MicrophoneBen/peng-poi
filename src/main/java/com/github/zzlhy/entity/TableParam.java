@@ -15,16 +15,16 @@ public class TableParam {
     private int sheetDataTotal = 500000;
 
     //导出时开始写入的起始行,默认从0开始
-    private Integer startRow=0;
+    private int startRow=0;
 
     //导入时,起始读取行
-    private Integer readRow=1;
+    private int readRow=1;
 
     //行高度
     private float height = 15;
 
     //是否创建标题行
-    private Boolean createHeadRow=true;
+    private boolean createHeadRow=true;
 
     //标题行设置
     private HeadRowStyle headRowStyle=new HeadRowStyle();
@@ -57,6 +57,11 @@ public class TableParam {
         this.excelType = excelType;
     }
 
+    public TableParam(ExcelType excelType, List<Col> cols) {
+        this.excelType = excelType;
+        this.cols = cols;
+    }
+
     public String getSheetName() {
         return sheetName;
     }
@@ -73,11 +78,11 @@ public class TableParam {
         this.sheetName = sheetName;
     }
 
-    public Integer getStartRow() {
+    public int getStartRow() {
         return startRow;
     }
 
-    public void setStartRow(Integer startRow) {
+    public void setStartRow(int startRow) {
         this.startRow = startRow;
     }
 
@@ -97,11 +102,11 @@ public class TableParam {
         this.height = height;
     }
 
-    public Boolean getCreateHeadRow() {
+    public boolean getCreateHeadRow() {
         return createHeadRow;
     }
 
-    public void setCreateHeadRow(Boolean createHeadRow) {
+    public void setCreateHeadRow(boolean createHeadRow) {
         this.createHeadRow = createHeadRow;
     }
 
@@ -113,11 +118,11 @@ public class TableParam {
         this.headRowStyle = headRowStyle;
     }
 
-    public Integer getReadRow() {
+    public int getReadRow() {
         return readRow;
     }
 
-    public void setReadRow(Integer readRow) {
+    public void setReadRow(int readRow) {
         this.readRow = readRow;
     }
 

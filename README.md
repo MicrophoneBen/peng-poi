@@ -31,11 +31,12 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
     //数据列表
     List<User> list = getListUser();
     //列配置
-    List<Col> cols = new ArrayList<>();
-    cols.add(new Col("用户名","userName"));
-    cols.add(new Col("姓名","name"));
-    cols.add(new Col("手机号码","telephone"));
-    cols.add(new Col("邮箱","email"));
+    List<Col> cols = Lists.newArrayList(
+        new Col("用户名","userName"),
+        new Col("姓名","name"),
+        new Col("手机号码","telephone"),
+        new Col("邮箱","email")
+    );
     TableParam tableParam=new TableParam(cols);
     Workbook workbook = ExcelUtils.excelExportByObject(tableParam,list);
 
@@ -45,11 +46,12 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
     //数据列表,数据集合里面是Map
     List<Map<String,Object>> list = getMapList();
     //列配置
-    List<Col> cols = new ArrayList<>();
-    cols.add(new Col("用户名","userName"));
-    cols.add(new Col("姓名","name"));
-    cols.add(new Col("手机号码","telephone"));
-    cols.add(new Col("邮箱","email"));
+    List<Col> cols = Lists.newArrayList(
+            new Col("用户名","userName"),
+            new Col("姓名","name"),
+            new Col("手机号码","telephone"),
+            new Col("邮箱","email")
+    );
     TableParam tableParam=new TableParam(cols);
     Workbook workbook = ExcelUtils.excelExportByMap(tableParam,list);
 
@@ -61,11 +63,12 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
     //要导出的数据总条数
     long toltal = getDataTotal();
     //列配置
-    List<Col> cols = new ArrayList<>();
-    cols.add(new Col("用户名","userName"));
-    cols.add(new Col("姓名","name"));
-    cols.add(new Col("手机号码","telephone"));
-    cols.add(new Col("邮箱","email"));
+    List<Col> cols = Lists.newArrayList(
+            new Col("用户名","userName"),
+            new Col("姓名","name"),
+            new Col("手机号码","telephone"),
+            new Col("邮箱","email")
+        );
     TableParam tableParam=new TableParam(cols);
     SXSSFWorkbook workbook = ExcelUtils.excelExport(tableParam,total,(page,size)-> userService.list(page, size));
 
@@ -75,11 +78,12 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
 ##### import example1(Excel读取):
 ```
     //列配置
-    List<Col> cols = new ArrayList<>();
-    cols.add(new Col("userName"));
-    cols.add(new Col("name"));
-    cols.add(new Col("telephone"));
-    cols.add(new Col("email"));
+    List<Col> cols = Lists.newArrayList(
+            new Col("userName"),
+            new Col("name"),
+            new Col("telephone"),
+            new Col("email")
+        );
     TableParam tableParam=new TableParam(cols);
     List<User> list = ExcelUtils.readExcel(inputStream,tableParam,SysUser.class);
 ```
@@ -88,11 +92,12 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
 ```
     //说明：读取到数据后可以直接加入数据库
     //列配置
-    List<Col> cols = new ArrayList<>();
-    cols.add(new Col("userName"));
-    cols.add(new Col("name"));
-    cols.add(new Col("telephone"));
-    cols.add(new Col("email"));
+    List<Col> cols = Lists.newArrayList(
+                new Col("userName"),
+                new Col("name"),
+                new Col("telephone"),
+                new Col("email")
+            );
     TableParam tableParam=new TableParam(cols);
     List<Map<String,Object>> failData= ExcelUtils.excelImport(inputStream,tableParam,SysUser.class, 
         user -> {
@@ -104,7 +109,44 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
      );
      注:返回的是导入失败的数据
 ```
-
+#### TableParam对象参数:
+```
+    //Sheet名称
+    String sheetName="Sheet";
+    //每个sheet允许的数据行数,超过此行数会创建新的sheet (xlsx时最大值为1048576)
+    int sheetDataTotal = 500000;
+    //导出时开始写入的起始行,默认从0开始
+    int startRow=0;
+    //导入时,起始读取行
+    int readRow=1;
+    //行高度
+    float height = 15;
+    //是否创建标题行
+    boolean createHeadRow=true;
+    //标题行设置
+    HeadRowStyle headRowStyle=new HeadRowStyle();
+    //导出Excel类型xls/xlsx   默认为xlsx
+    ExcelType excelType=ExcelType.XLSX;
+    //列属性数组
+    List<Col> cols;
+```
+#### Col对象参数:
+```
+       //标题名称
+       String title;
+       //属性名
+       String key;
+       //列宽度,默认为15个字符
+       int width = 15;
+       //日期格式
+       String format;
+       //公式或函数
+       String formula;
+       //对读取到的单元格值进行转换的实现,可自行实现
+       ConvertValue convertValue;
+       //列样式
+       ColStyle colStyle=new ColStyle();
+```
 
 **License:**
 
