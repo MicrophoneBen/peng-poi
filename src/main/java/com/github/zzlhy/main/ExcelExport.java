@@ -308,20 +308,6 @@ public class ExcelExport {
             // 设置单元格内容
             cell.setCellValue(columnParams.get(i).getTitle());
             cell.setCellStyle(style);
-
-            //数据有效性设置(数据格式设置)
-            //int lastRow = 65535;
-            //if(tableParam.getExcelType().equals(ExcelType.XLSX) || tableParam.getExcelType().equals(ExcelType.SXLSX)){
-            //    lastRow = 1048576;
-            //}
-            //CellRangeAddressList regions = new CellRangeAddressList(row.getRowNum(), lastRow, i, i);//选定一个区域  参数：起始行序号，终止行序号，起始列序号，终止列序号
-            ////DVConstraint constraint = DVConstraint.createDateConstraint(DVConstraint.OperatorType.BETWEEN, "1993-01-01", "2014-12-31", "yyyy-MM-dd");
-            ////下拉菜单生成
-            //DVConstraint constraint = DVConstraint.createExplicitListConstraint(new String[] { "C++", "Java", "C#" });
-            //HSSFDataValidation dataValidate = new HSSFDataValidation(regions, constraint);
-            //Sheet sheet = workbook.getSheetAt(workbook.getActiveSheetIndex());
-            //sheet.addValidationData(dataValidate);
-
         }
     }
 
