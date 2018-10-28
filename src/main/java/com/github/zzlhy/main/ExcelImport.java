@@ -233,15 +233,30 @@ public class ExcelImport {
                     //有公式时的处理
                     cell.setCellType(CellType.STRING);
                     value = cell.getStringCellValue();
+
+                    //为公式时
+                    //获取数值
+                    //double numericCellValue1 = cell.getNumericCellValue();
+                    //获取公式
+                    //String cellFormula = cell.getCellFormula();
+                    //value =  String.valueOf(numericCellValue1);
                     break;
                 case NUMERIC:
                     //判断是否为日期格式
                     if (DateUtil.isCellDateFormatted(cell)) {
                         value = sdf.format(cell.getDateCellValue());
                     } else {
-                        // 不是日期格式，则防止当数字过长时以科学计数法显示
-                        cell.setCellType(CellType.STRING);
-                        value = cell.toString();
+                        //为数值
+                        long longVal = Math.round(cell.getNumericCellValue());
+                        double doubleVal = cell.getNumericCellValue();
+
+                        //通过比较判断是否为double类型的数值
+                        if(Double.parseDouble(longVal+".0") == doubleVal){
+                            //为整数型
+                            value = String.valueOf(longVal);
+                        }else{
+                            value = cell.toString();
+                        }
                     }
                     break;
                 default:

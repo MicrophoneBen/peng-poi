@@ -32,13 +32,25 @@ public class TableParam {
     //导出Excel类型xls/xlsx   默认为xlsx
     private ExcelType excelType=ExcelType.XLSX;
 
-    //列属性数组
+    //冻结列设置
+    //固定行的列号 是从1开始
+    private int freezeColSplit = 0;
+    //固定行的行号
+    private int freezeRowSplit = 0;
+
+    //列属性数组 是从1开始
     private List<Col> cols;
 
     public TableParam() {
     }
 
     public TableParam(List<Col> cols) {
+        this.cols = cols;
+    }
+
+    public TableParam(int freezeColSplit, int freezeRowSplit, List<Col> cols) {
+        this.freezeColSplit = freezeColSplit;
+        this.freezeRowSplit = freezeRowSplit;
         this.cols = cols;
     }
 
@@ -132,5 +144,21 @@ public class TableParam {
 
     public void setExcelType(ExcelType excelType) {
         this.excelType = excelType;
+    }
+
+    public int getFreezeColSplit() {
+        return freezeColSplit;
+    }
+
+    public void setFreezeColSplit(int freezeColSplit) {
+        this.freezeColSplit = freezeColSplit;
+    }
+
+    public int getFreezeRowSplit() {
+        return freezeRowSplit;
+    }
+
+    public void setFreezeRowSplit(int freezeRowSplit) {
+        this.freezeRowSplit = freezeRowSplit;
     }
 }

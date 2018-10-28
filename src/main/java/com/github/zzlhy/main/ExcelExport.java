@@ -58,6 +58,8 @@ public class ExcelExport {
 
         /*创建Workbook和Sheet*/
         Sheet sheet = workbook.createSheet(tableParam.getSheetName());//创建工作表(Sheet)
+        //冻结列
+        sheet.createFreezePane(tableParam.getFreezeColSplit(),tableParam.getFreezeRowSplit());
         //开始行
         Integer startRow = tableParam.getStartRow();
 
@@ -96,6 +98,8 @@ public class ExcelExport {
 
         /*创建Workbook和Sheet*/
         Sheet sheet = workbook.createSheet(tableParam.getSheetName());//创建工作表(Sheet)
+        //冻结列
+        sheet.createFreezePane(tableParam.getFreezeColSplit(),tableParam.getFreezeRowSplit());
 
         //开始行
         Integer startRow = tableParam.getStartRow();
@@ -153,6 +157,8 @@ public class ExcelExport {
 
             //创建工作表(Sheet)
             Sheet sheet = workbook.createSheet(tableParam.getSheetName()+j);
+            //冻结列
+            sheet.createFreezePane(tableParam.getFreezeColSplit(),tableParam.getFreezeRowSplit());
 
             //开始写入的行号
             Integer startRow = tableParam.getStartRow();
