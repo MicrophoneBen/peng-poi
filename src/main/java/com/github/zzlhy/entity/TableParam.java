@@ -44,11 +44,35 @@ public class TableParam {
     public TableParam() {
     }
 
+    public static TableParam of(List<Col> cols){
+        return new TableParam(cols);
+    }
+
+    public static TableParam of(List<Col> cols,ExcelType excelType){
+        return new TableParam(cols,excelType);
+    }
+
+    public static TableParam of(List<Col> cols,int freezeRowSplit){
+        return new TableParam(cols,0,freezeRowSplit);
+    }
+
+    public static TableParam of(List<Col> cols,int freezeColSplit, int freezeRowSplit){
+        return new TableParam(cols,freezeColSplit,freezeRowSplit);
+    }
+
+    public static TableParam of(List<Col> cols, int freezeRowSplit,ExcelType excelType){
+        return new TableParam(cols,freezeRowSplit,excelType);
+    }
+
+    public static TableParam of(List<Col> cols,int freezeColSplit, int freezeRowSplit,ExcelType excelType){
+        return new TableParam(cols,freezeColSplit,freezeRowSplit,excelType);
+    }
+
     public TableParam(List<Col> cols) {
         this.cols = cols;
     }
 
-    public TableParam(int freezeColSplit, int freezeRowSplit, List<Col> cols) {
+    public TableParam(List<Col> cols,int freezeColSplit, int freezeRowSplit) {
         this.freezeColSplit = freezeColSplit;
         this.freezeRowSplit = freezeRowSplit;
         this.cols = cols;
@@ -65,12 +89,21 @@ public class TableParam {
         this.height = height;
     }
 
-    public TableParam(ExcelType excelType) {
+    public TableParam(List<Col> cols,ExcelType excelType) {
         this.excelType = excelType;
+        this.cols = cols;
     }
 
-    public TableParam(ExcelType excelType, List<Col> cols) {
+    public TableParam(List<Col> cols, int freezeRowSplit, ExcelType excelType) {
         this.excelType = excelType;
+        this.freezeRowSplit = freezeRowSplit;
+        this.cols = cols;
+    }
+
+    public TableParam(List<Col> cols,int freezeColSplit, int freezeRowSplit, ExcelType excelType) {
+        this.excelType = excelType;
+        this.freezeColSplit = freezeColSplit;
+        this.freezeRowSplit = freezeRowSplit;
         this.cols = cols;
     }
 

@@ -1,6 +1,8 @@
 import com.github.zzlhy.ExcelUtils;
 import com.github.zzlhy.entity.Col;
+import com.github.zzlhy.entity.ExcelType;
 import com.github.zzlhy.entity.TableParam;
+import com.github.zzlhy.main.ExcelExport;
 import com.github.zzlhy.util.Lists;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -35,7 +37,7 @@ public class TestPOI {
                 new Col("统计",30,"B2:B1000+1"),
                 new Col("随机数",30,"int(RAND()*1000)")
         );
-        TableParam tableParam=new TableParam(cols);
+
         List<Person> list = new ArrayList<>();
         list.add(new Person("小泽",30, LocalDate.of(1988,10,2),true, LocalDateTime.now()));
         list.add(new Person("小苍",31, LocalDate.of(1987,1,2),true, LocalDateTime.now()));
@@ -43,9 +45,7 @@ public class TestPOI {
         list.add(new Person("武藤",20, LocalDate.of(1980,12,2),true, LocalDateTime.now()));
         list.add(new Person("波多",18, LocalDate.of(1990,8,15),true, LocalDateTime.now()));
 
-        tableParam.setFreezeColSplit(1);
-        tableParam.setFreezeRowSplit(1);
-        Workbook workbook = ExcelUtils.excelExport(tableParam,list);
+        Workbook workbook = ExcelExport.exportExcelByObject(TableParam.of(cols,1,1,ExcelType.XLSX),list);
 
         String name = "D:\\"+LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))+".xlsx";
         workbook.write(new FileOutputStream(name));
@@ -65,7 +65,7 @@ public class TestPOI {
         TableParam tableParam=new TableParam(cols);
         tableParam.setFreezeColSplit(1);
         tableParam.setFreezeRowSplit(1);
-        List<Person> list = (List<Person>) ExcelUtils.readExcel("D:\\20181028154845.xlsx", tableParam, Person.class);
+        List<Person> list = (List<Person>) ExcelUtils.readExcel("D:\\20181029093840.xlsx", tableParam, Person.class);
 
         System.out.println("OK");
     }

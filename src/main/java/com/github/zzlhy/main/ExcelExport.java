@@ -9,11 +9,12 @@ import com.github.zzlhy.func.GeneratorDataHandler;
 import com.github.zzlhy.util.Utils;
 import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFDataValidation;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -449,6 +450,30 @@ public class ExcelExport {
                 cell.setCellValue(empty);
             }
         }
+    }
+
+
+    private static void setDropDownList(XSSFSheet sheet,String[] list) {
+        XSSFDataValidationHelper dvHelper = new XSSFDataValidationHelper(sheet);
+        XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint) dvHelper.createExplicitListConstraint(list);
+        CellRangeAddressList addressList = null;
+        XSSFDataValidation validation = null;
+        for (int i = 0; i < 100; i++) {
+            addressList = new CellRangeAddressList(i, i, 0, 0);
+            validation = (XSSFDataValidation) dvHelper.createValidation(
+                    dvConstraint, addressList);
+            validation.setSuppressDropDownArrow(true);
+            validation.setShowErrorBox(true);
+            sheet.addValidationData(validation);
+        }
+    }
+    private static void setDropDownList(HSSFSheet sheet, String[] list) {
+        CellRangeAddressList regions = new CellRangeAddressList(0, 9, 0, 0);
+        //创建下拉列表数据
+        DVConstraint constraint = DVConstraint.createExplicitListConstraint(list);
+        //绑定
+        HSSFDataValidation dataValidation = new HSSFDataValidation(regions, constraint);
+        sheet.addValidationData(dataValidation);
     }
 
 }
