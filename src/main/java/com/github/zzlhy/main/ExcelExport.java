@@ -1,9 +1,7 @@
 package com.github.zzlhy.main;
 
 
-import com.github.zzlhy.entity.Col;
-import com.github.zzlhy.entity.ExcelType;
-import com.github.zzlhy.entity.TableParam;
+import com.github.zzlhy.entity.*;
 import com.github.zzlhy.func.ConvertValue;
 import com.github.zzlhy.func.GeneratorDataHandler;
 import com.github.zzlhy.util.Utils;
@@ -73,7 +71,7 @@ public class ExcelExport {
         }
         //当前数据处理到的行数,开始时为标题行的下一行（每个sheet重新计算）
         int currentRow = startRow+1;
-        addRows(sheet, currentRow, tableParam, data);
+        addRows(workbook, sheet, currentRow, tableParam, data);
         return workbook;
     }
 
@@ -114,7 +112,7 @@ public class ExcelExport {
         }
         //当前数据处理到的行数,开始时为标题行的下一行（每个sheet重新计算）
         int currentRow = startRow+1;
-        addRowsByMap(sheet, currentRow, tableParam, data);
+        addRowsByMap(workbook, sheet, currentRow, tableParam, data);
         return workbook;
     }
 
@@ -181,7 +179,7 @@ public class ExcelExport {
             //开始循环加入数据(分页查询数据)
             for (int i = currentPage; i <= page; i++) {
                 list = generatorDataHandler.generatorData(i,pageSize);
-                int tempRow = addRows(sheet, currentRow, tableParam, list);
+                int tempRow = addRows(workbook, sheet, currentRow, tableParam, list);
                 list.clear();
                 currentRow = tempRow;
                 //如果超过了限制的行数则跳出,进行新的sheet写入
@@ -198,6 +196,7 @@ public class ExcelExport {
 
     /**
      * 新增数据行  说明：传入的是对象集合
+     * @param workbook workbook
      * @param sheet sheet
      * @param currentRow  当前处理到的行号
      * @param tableParam  配置参数
@@ -207,7 +206,7 @@ public class ExcelExport {
      * @throws IllegalAccessException e
      * @throws IntrospectionException e
      */
-    private static int addRows(Sheet sheet, int currentRow, TableParam tableParam, List<?> data) throws InvocationTargetException, IllegalAccessException, IntrospectionException {
+    private static int addRows(Workbook workbook,Sheet sheet, int currentRow, TableParam tableParam, List<?> data) throws InvocationTargetException, IllegalAccessException, IntrospectionException {
         //创建数据
         for(int k = 0; k<data.size(); k++) {
             // 创建行
@@ -240,7 +239,14 @@ public class ExcelExport {
 
                 String format = tableParam.getCols().get(j).getFormat();//获取日期的格式化的格式
                 ConvertValue convertValue = tableParam.getCols().get(j).getConvertValue();//需要转换值的方法对象
+
                 setCell(cell,result,format,convertValue);
+
+                //样式获取设置
+                CellStyle cellStyle = setCellStyle(workbook, tableParam.getCols().get(j).getColStyle());
+                if(cellStyle != null){
+                    cell.setCellStyle(cellStyle);
+                }
 
             }
             currentRow++;
@@ -259,7 +265,7 @@ public class ExcelExport {
      * @throws IllegalAccessException e
      * @throws IntrospectionException e
      */
-    private static int addRowsByMap(Sheet sheet, int currentRow, TableParam tableParam, List<? extends Map<?,?>> data) throws InvocationTargetException, IllegalAccessException, IntrospectionException {
+    private static int addRowsByMap(Workbook workbook, Sheet sheet, int currentRow, TableParam tableParam, List<? extends Map<?,?>> data) throws InvocationTargetException, IllegalAccessException, IntrospectionException {
         //创建数据
         for(int k = 0; k<data.size(); k++) {
             // 创建行
@@ -286,6 +292,12 @@ public class ExcelExport {
                 String format = tableParam.getCols().get(j).getFormat();//获取日期的格式化的格式
                 ConvertValue convertValue = tableParam.getCols().get(j).getConvertValue();//需要转换值的方法对象
                 setCell(cell,result,format,convertValue);
+
+                //样式获取设置
+                CellStyle cellStyle = setCellStyle(workbook, tableParam.getCols().get(j).getColStyle());
+                if(cellStyle != null){
+                    cell.setCellStyle(cellStyle);
+                }
 
             }
             currentRow++;
@@ -450,6 +462,51 @@ public class ExcelExport {
                 cell.setCellValue(empty);
             }
         }
+    }
+
+    /**
+     * 设置单元格样式
+     * @param workbook workbook
+     * @param colStyle colStyle
+     * @return CellStyle
+     */
+    private static CellStyle setCellStyle(Workbook workbook, ColStyle colStyle){
+        FontStyle fontStyle = colStyle.getFontStyle();
+        if(fontStyle != null){
+            //单元格样式
+            CellStyle cellStyle = workbook.createCellStyle();
+
+            //字体样式
+            Font font = workbook.createFont();
+
+            if(fontStyle.getBold() != null){
+                font.setBold(fontStyle.getBold());
+            }
+            if(fontStyle.getItalic() != null){
+                font.setItalic(fontStyle.getItalic());
+            }
+            if(fontStyle.getStrikeout() != null){
+                font.setStrikeout(fontStyle.getStrikeout());
+            }
+            if(fontStyle.getColor() != null){
+                font.setColor(fontStyle.getColor());
+            }
+            if(fontStyle.getHeightInPoints() != null){
+                font.setFontHeightInPoints(fontStyle.getHeightInPoints());
+            }
+            if(fontStyle.getUnderline() != null){
+                font.setUnderline(fontStyle.getUnderline());
+            }
+            if(fontStyle.getTypeOffset() != null){
+                font.setTypeOffset(fontStyle.getTypeOffset());
+            }
+            if(Utils.notEmpty(fontStyle.getFontName())){
+                font.setFontName(fontStyle.getFontName());
+            }
+            cellStyle.setFont(font);
+            return cellStyle;
+        }
+        return null;
     }
 
 

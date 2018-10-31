@@ -41,70 +41,36 @@ public class TableParam {
     //列属性数组 是从1开始
     private List<Col> cols;
 
-    public TableParam() {
+    public static TableParam of(){
+        return new TableParam();
     }
 
     public static TableParam of(List<Col> cols){
-        return new TableParam(cols);
+        return of().setCols(cols);
     }
 
     public static TableParam of(List<Col> cols,ExcelType excelType){
-        return new TableParam(cols,excelType);
+        return of().setCols(cols).setExcelType(excelType);
     }
 
     public static TableParam of(List<Col> cols,int freezeRowSplit){
-        return new TableParam(cols,0,freezeRowSplit);
+        return of().setCols(cols).setFreezeRowSplit(freezeRowSplit);
     }
 
     public static TableParam of(List<Col> cols,int freezeColSplit, int freezeRowSplit){
-        return new TableParam(cols,freezeColSplit,freezeRowSplit);
+        return of(cols,freezeRowSplit).setFreezeColSplit(freezeColSplit);
     }
 
     public static TableParam of(List<Col> cols, int freezeRowSplit,ExcelType excelType){
-        return new TableParam(cols,freezeRowSplit,excelType);
+        return of(cols,freezeRowSplit).setExcelType(excelType);
     }
 
     public static TableParam of(List<Col> cols,int freezeColSplit, int freezeRowSplit,ExcelType excelType){
-        return new TableParam(cols,freezeColSplit,freezeRowSplit,excelType);
+        return of(cols,freezeColSplit,freezeRowSplit).setExcelType(excelType);
     }
 
-    public TableParam(List<Col> cols) {
-        this.cols = cols;
-    }
-
-    public TableParam(List<Col> cols,int freezeColSplit, int freezeRowSplit) {
-        this.freezeColSplit = freezeColSplit;
-        this.freezeRowSplit = freezeRowSplit;
-        this.cols = cols;
-    }
-
-    public TableParam(int sheetDataTotal, List<Col> cols) {
-        this.sheetDataTotal = sheetDataTotal;
-        this.cols = cols;
-    }
-
-    public TableParam(String sheetName, Integer startRow, float height) {
-        this.sheetName = sheetName;
-        this.startRow = startRow;
-        this.height = height;
-    }
-
-    public TableParam(List<Col> cols,ExcelType excelType) {
-        this.excelType = excelType;
-        this.cols = cols;
-    }
-
-    public TableParam(List<Col> cols, int freezeRowSplit, ExcelType excelType) {
-        this.excelType = excelType;
-        this.freezeRowSplit = freezeRowSplit;
-        this.cols = cols;
-    }
-
-    public TableParam(List<Col> cols,int freezeColSplit, int freezeRowSplit, ExcelType excelType) {
-        this.excelType = excelType;
-        this.freezeColSplit = freezeColSplit;
-        this.freezeRowSplit = freezeRowSplit;
-        this.cols = cols;
+    public static TableParam of(int sheetDataTotal, List<Col> cols) {
+        return of(cols).setSheetDataTotal(sheetDataTotal);
     }
 
     public String getSheetName() {
@@ -115,83 +81,94 @@ public class TableParam {
         return sheetDataTotal;
     }
 
-    public void setSheetDataTotal(int sheetDataTotal) {
+    public TableParam setSheetDataTotal(int sheetDataTotal) {
         this.sheetDataTotal = sheetDataTotal;
+        return this;
     }
 
-    public void setSheetName(String sheetName) {
+    public TableParam setSheetName(String sheetName) {
         this.sheetName = sheetName;
+        return this;
     }
 
     public int getStartRow() {
         return startRow;
     }
 
-    public void setStartRow(int startRow) {
+    public TableParam setStartRow(int startRow) {
         this.startRow = startRow;
+        return this;
     }
 
     public List<Col> getCols() {
         return cols;
     }
 
-    public void setCols(List<Col> cols) {
+    public TableParam setCols(List<Col> cols) {
         this.cols = cols;
+        return this;
     }
 
     public float getHeight() {
         return height;
     }
 
-    public void setHeight(float height) {
+    public TableParam setHeight(float height) {
         this.height = height;
+        return this;
     }
 
     public boolean getCreateHeadRow() {
         return createHeadRow;
     }
 
-    public void setCreateHeadRow(boolean createHeadRow) {
+    public TableParam setCreateHeadRow(boolean createHeadRow) {
         this.createHeadRow = createHeadRow;
+        return this;
     }
 
     public HeadRowStyle getHeadRowStyle() {
         return headRowStyle;
     }
 
-    public void setHeadRowStyle(HeadRowStyle headRowStyle) {
+    public TableParam setHeadRowStyle(HeadRowStyle headRowStyle) {
         this.headRowStyle = headRowStyle;
+        return this;
     }
 
     public int getReadRow() {
         return readRow;
     }
 
-    public void setReadRow(int readRow) {
+    public TableParam setReadRow(int readRow) {
         this.readRow = readRow;
+        return this;
     }
 
     public ExcelType getExcelType() {
         return excelType;
     }
 
-    public void setExcelType(ExcelType excelType) {
+    public TableParam setExcelType(ExcelType excelType) {
         this.excelType = excelType;
+        return this;
     }
 
     public int getFreezeColSplit() {
         return freezeColSplit;
     }
 
-    public void setFreezeColSplit(int freezeColSplit) {
+    public TableParam setFreezeColSplit(int freezeColSplit) {
         this.freezeColSplit = freezeColSplit;
+        return this;
     }
 
     public int getFreezeRowSplit() {
         return freezeRowSplit;
     }
 
-    public void setFreezeRowSplit(int freezeRowSplit) {
+    public TableParam setFreezeRowSplit(int freezeRowSplit) {
         this.freezeRowSplit = freezeRowSplit;
+        return this;
     }
 }

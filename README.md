@@ -37,11 +37,10 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
         new Col("手机号码","telephone"),
         new Col("邮箱","email")
     );
-    TableParam tableParam=new TableParam(cols);
-    Workbook workbook = ExcelUtils.excelExportByObject(tableParam,list);
+    Workbook workbook = ExcelUtils.excelExportByObject(TableParam.of(cols),list);
 
 ```
-##### export example2(最简单的导出方式):
+##### export example2(数据为Map集合):
 ```
     //数据列表,数据集合里面是Map
     List<Map<String,Object>> list = getMapList();
@@ -52,7 +51,7 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
             new Col("手机号码","telephone"),
             new Col("邮箱","email")
     );
-    TableParam tableParam=new TableParam(cols);
+    TableParam tableParam = TableParam.of(cols);
     Workbook workbook = ExcelUtils.excelExportByMap(tableParam,list);
 
 ```
@@ -69,7 +68,7 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
             new Col("手机号码","telephone"),
             new Col("邮箱","email")
         );
-    TableParam tableParam=new TableParam(cols);
+    TableParam tableParam = TableParam.of(cols);
     SXSSFWorkbook workbook = ExcelUtils.excelExport(tableParam,total,(page,size)-> userService.list(page, size));
 
     说明：(page,size)-> userService.list(page, size) page是当前页码,从0开始,size是每页大小,
@@ -84,11 +83,11 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
             new Col("telephone"),
             new Col("email")
         );
-    TableParam tableParam=new TableParam(cols);
+    TableParam tableParam = TableParam.of(cols);
     List<User> list = ExcelUtils.readExcel(inputStream,tableParam,SysUser.class);
 ```
 
-##### import example2(Excel读取导入):
+##### import example2(Excel读取并导入数据库等):
 ```
     //说明：读取到数据后可以直接加入数据库
     //列配置
@@ -98,7 +97,7 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
                 new Col("telephone"),
                 new Col("email")
             );
-    TableParam tableParam=new TableParam(cols);
+    TableParam tableParam = TableParam.of(cols);
     List<Map<String,Object>> failData= ExcelUtils.excelImport(inputStream,tableParam,SysUser.class, 
         user -> {
             //保存用户的方法
@@ -127,6 +126,10 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
     HeadRowStyle headRowStyle=new HeadRowStyle();
     //导出Excel类型xls/xlsx   默认为xlsx
     ExcelType excelType=ExcelType.XLSX;
+    //冻结列设置
+    private int freezeColSplit = 0;
+    //固定行的行号
+    private int freezeRowSplit = 0;
     //列属性数组
     List<Col> cols;
 ```

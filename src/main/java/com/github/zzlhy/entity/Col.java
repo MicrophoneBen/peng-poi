@@ -30,6 +30,55 @@ public class Col {
     //列样式
     private ColStyle colStyle=new ColStyle();
 
+    public static Col of() {
+        return new Col();
+    }
+
+    public static Col of(String key) {
+        return of().setKey(key);
+    }
+
+    public static Col of(String title, String key) {
+        return of(key).setTitle(title);
+    }
+
+    public static Col of(String key, ConvertValue convertValue) {
+        return of(key).setConvertValue(convertValue);
+    }
+
+    public static Col of(String title, int width, String formula) {
+        return of().setTitle(title).setWidth(width).setFormula(formula);
+    }
+
+    public static Col of(String title, String key, String format) {
+        return of(title,key).setFormat(format);
+    }
+
+    public static Col of(String title, String key, int width) {
+        return of(title,key).setWidth(width);
+    }
+
+    public static Col of(String title, String key, ConvertValue convertValue) {
+        return of(title,key).setConvertValue(convertValue);
+    }
+
+    public static Col of(String title, String key, ColStyle colStyle) {
+        return of(title,key).setColStyle(colStyle);
+    }
+
+    public static Col of(String title, String key, int width, String format) {
+        return of(title,key).setWidth(width).setFormat(format);
+    }
+
+    public static Col of(String title, String key, int width, ColStyle colStyle) {
+        return of(title,key,colStyle).setWidth(width);
+    }
+
+    public static Col of(String title, String key, int width, ConvertValue convertValue) {
+        return of(title,key).setWidth(width).setConvertValue(convertValue);
+    }
+
+
     public Col() {
     }
 
@@ -84,11 +133,11 @@ public class Col {
         this.format = format;
     }
 
-    public Col(String title, String key, String format, ConvertValue convertValue) {
+    public Col(String title, String key, int width, ColStyle colStyle) {
         this.title = title;
         this.key = key;
-        this.format = format;
-        this.convertValue = convertValue;
+        this.width = width;
+        this.colStyle = colStyle;
     }
 
     public Col(String title, String key, int width, ConvertValue convertValue) {
@@ -98,86 +147,67 @@ public class Col {
         this.convertValue = convertValue;
     }
 
-    public Col(String title, String key, int width, String format, ConvertValue convertValue) {
-        this.title = title;
-        this.key = key;
-        this.width = width;
-        this.format = format;
-        this.convertValue = convertValue;
-    }
-
-    public Col(String title, String key, int width, String format, ConvertValue convertValue, ColStyle colStyle) {
-        this.title = title;
-        this.key = key;
-        this.width = width;
-        this.format = format;
-        this.convertValue = convertValue;
-        this.colStyle = colStyle;
-    }
-
-    public Col(String title, String key, int width, String format, ConvertValue convertValue, String formula, ColStyle colStyle) {
-        this.title = title;
-        this.key = key;
-        this.width = width;
-        this.format = format;
-        this.convertValue = convertValue;
-        this.formula = formula;
-        this.colStyle = colStyle;
-    }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public Col setTitle(String title) {
         this.title = title;
+        return this;
     }
 
     public String getKey() {
         return key;
     }
 
-    public void setKey(String key) {
+    public Col setKey(String key) {
         this.key = key;
+        return this;
     }
 
     public ConvertValue getConvertValue() {
         return convertValue;
     }
 
-    public void setConvertValue(ConvertValue convertValue) {
+    public Col setConvertValue(ConvertValue convertValue) {
         this.convertValue = convertValue;
+        return this;
     }
 
     public int getWidth() {
         return width;
     }
 
-    public void setWidth(int width) {
+    public Col setWidth(int width) {
         this.width = width;
+        return this;
     }
 
     public String getFormat() {
         return format;
     }
 
-    public void setFormat(String format) {
+    public Col setFormat(String format) {
         this.format = format;
+        return this;
     }
 
     public String getFormula() {
         return formula;
     }
 
-    public void setFormula(String formula) {
+    public Col setFormula(String formula) {
         this.formula = formula;
+        return this;
     }
 
     public ColStyle getColStyle() {
         return colStyle;
     }
 
-    public void setColStyle(ColStyle columnStyle) {
+    public Col setColStyle(ColStyle columnStyle) {
         this.colStyle = columnStyle;
+        return this;
     }
 }
