@@ -1,5 +1,7 @@
 package com.github.zzlhy.entity;
 
+import org.apache.poi.ss.util.CellRangeAddress;
+
 import java.util.List;
 
 /**
@@ -9,34 +11,37 @@ import java.util.List;
 public class TableParam {
 
     //Sheet名称
-    private String sheetName="Sheet";
+    private String sheetName = "Sheet";
 
     //每个sheet允许的数据行数,超过此行数会创建新的sheet (xlsx最大值为1048576)
     private int sheetDataTotal = 500000;
 
     //导出时开始写入的起始行,默认从0开始
-    private int startRow=0;
+    private int writeRow = 0;
 
     //导入时,起始读取行
-    private int readRow=1;
+    private int readRow = 1;
 
     //行高度
     private float height = 15;
 
     //是否创建标题行
-    private boolean createHeadRow=true;
+    private boolean createHeadRow = true;
 
     //标题行设置
-    private HeadRowStyle headRowStyle=new HeadRowStyle();
+    private HeadRowStyle headRowStyle = new HeadRowStyle();
 
     //导出Excel类型xls/xlsx   默认为xlsx
-    private ExcelType excelType=ExcelType.XLSX;
+    private ExcelType excelType = ExcelType.XLSX;
 
     //冻结列设置
     //固定行的列号 是从1开始
     private int freezeColSplit = 0;
     //固定行的行号
     private int freezeRowSplit = 0;
+
+    //合并单元格
+    private List<CellRangeAddress> mergeRegion;
 
     //列属性数组 是从1开始
     private List<Col> cols;
@@ -91,12 +96,12 @@ public class TableParam {
         return this;
     }
 
-    public int getStartRow() {
-        return startRow;
+    public int getWriteRow() {
+        return writeRow;
     }
 
-    public TableParam setStartRow(int startRow) {
-        this.startRow = startRow;
+    public TableParam setWriteRow(int writeRow) {
+        this.writeRow = writeRow;
         return this;
     }
 
@@ -169,6 +174,15 @@ public class TableParam {
 
     public TableParam setFreezeRowSplit(int freezeRowSplit) {
         this.freezeRowSplit = freezeRowSplit;
+        return this;
+    }
+
+    public List<CellRangeAddress> getMergeRegion() {
+        return mergeRegion;
+    }
+
+    public TableParam setMergeRegion(List<CellRangeAddress> mergeRegion) {
+        this.mergeRegion = mergeRegion;
         return this;
     }
 }

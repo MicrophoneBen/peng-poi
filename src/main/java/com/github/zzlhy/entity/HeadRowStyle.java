@@ -9,10 +9,10 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 public class HeadRowStyle {
 
     //标题行加粗
-    private Boolean headBold=true;
+    private Boolean headBold = true;
 
-    //标题行位置  默认居左
-    private HorizontalAlignment horizontalAlignment= HorizontalAlignment.LEFT;
+    //标题行对齐方式  默认居左
+    private HorizontalAlignment horizontalAlignment = HorizontalAlignment.LEFT;
 
     public Boolean getHeadBold() {
         return headBold;

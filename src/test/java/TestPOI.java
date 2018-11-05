@@ -4,7 +4,10 @@ import com.github.zzlhy.main.ExcelExport;
 import com.github.zzlhy.util.Lists;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.junit.Test;
 
@@ -29,10 +32,10 @@ public class TestPOI {
     public void test1() throws IllegalAccessException, IntrospectionException, InvocationTargetException, IOException {
         //导出参数配置
         List<Col> cols = Lists.newArrayList(
-                new Col("姓名","name"),
+                new Col("姓名","name",ColStyle.of().setHorizontalAlignment(HorizontalAlignment.CENTER).setVerticalAlignment(VerticalAlignment.CENTER)),
                 Col.of("年龄","age"),
                 new Col("生日","birthday",ColStyle.of(Color.ORANGE.getIndex())),
-                new Col("启用","active"),
+                new Col("启用","active",ColStyle.of().setHorizontalAlignment(HorizontalAlignment.RIGHT)),
                 new Col("创建日期","createDate",25,ColStyle.of(FontStyle.of(Color.RED.getIndex()).setUnderline((byte)1))),
                 new Col("统计",30,"B2:B1000+1"),
                 new Col("随机数",30,"int(RAND()*1000)")
@@ -45,7 +48,10 @@ public class TestPOI {
         list.add(new Person("武藤",20, LocalDate.of(1980,12,2),true, LocalDateTime.now()));
         list.add(new Person("波多",18, LocalDate.of(1990,8,15),true, LocalDateTime.now()));
 
-        Workbook workbook = ExcelExport.exportExcelByObject(TableParam.of(cols,1,1),list);
+        Workbook workbook = ExcelExport.exportExcelByObject(
+                TableParam.of(cols),
+                list
+        );
 
         String name = "D:\\"+LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))+".xlsx";
         workbook.write(new FileOutputStream(name));

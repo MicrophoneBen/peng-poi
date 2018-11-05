@@ -62,30 +62,18 @@ public enum  Color {
         this.color = new HSSFColor(index, index2, new java.awt.Color(rgb));
     }
 
-    /**
-     * @see HSSFColor#getIndex()
-     */
     public short getIndex() {
         return color.getIndex();
     }
 
-    /**
-     * @see HSSFColor#getIndex2()
-     */
     public short getIndex2() {
         return color.getIndex2();
     }
 
-    /**
-     * @see HSSFColor#getTriplet()
-     */
     public short [] getTriplet() {
         return color.getTriplet();
     }
 
-    /**
-     * @see HSSFColor#getHexString()
-     */
     public String getHexString() {
         return color.getHexString();
     }

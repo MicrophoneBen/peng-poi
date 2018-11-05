@@ -10,6 +10,7 @@ import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.*;
@@ -59,18 +60,24 @@ public class ExcelExport {
         Sheet sheet = workbook.createSheet(tableParam.getSheetName());//创建工作表(Sheet)
         //冻结列
         sheet.createFreezePane(tableParam.getFreezeColSplit(),tableParam.getFreezeRowSplit());
+        //合并单元格
+        if(tableParam.getMergeRegion() != null && tableParam.getMergeRegion().size() > 0){
+            for (CellRangeAddress cellAddresses : tableParam.getMergeRegion()) {
+                sheet.addMergedRegion(cellAddresses);
+            }
+        }
         //开始行
-        Integer startRow = tableParam.getStartRow();
+        Integer writeRow = tableParam.getWriteRow();
 
         //创建标题
         if(tableParam.getCreateHeadRow()){
             /*创建标题行*/
-            Row row = sheet.createRow(startRow);// 创建行,从0开始
+            Row row = sheet.createRow(writeRow);// 创建行,从0开始
             //标题设置
             setHeadRow(workbook,row,tableParam);
         }
         //当前数据处理到的行数,开始时为标题行的下一行（每个sheet重新计算）
-        int currentRow = startRow+1;
+        int currentRow = writeRow+1;
         addRows(workbook, sheet, currentRow, tableParam, data);
         return workbook;
     }
@@ -99,19 +106,25 @@ public class ExcelExport {
         Sheet sheet = workbook.createSheet(tableParam.getSheetName());//创建工作表(Sheet)
         //冻结列
         sheet.createFreezePane(tableParam.getFreezeColSplit(),tableParam.getFreezeRowSplit());
+        //合并单元格
+        if(tableParam.getMergeRegion() != null && tableParam.getMergeRegion().size() > 0){
+            for (CellRangeAddress cellAddresses : tableParam.getMergeRegion()) {
+                sheet.addMergedRegion(cellAddresses);
+            }
+        }
 
         //开始行
-        Integer startRow = tableParam.getStartRow();
+        Integer writeRow = tableParam.getWriteRow();
 
         //创建标题
         if(tableParam.getCreateHeadRow()){
             /*创建标题行*/
-            Row row = sheet.createRow(startRow);// 创建行,从0开始
+            Row row = sheet.createRow(writeRow);// 创建行,从0开始
             //标题设置
             setHeadRow(workbook,row,tableParam);
         }
         //当前数据处理到的行数,开始时为标题行的下一行（每个sheet重新计算）
-        int currentRow = startRow+1;
+        int currentRow = writeRow+1;
         addRowsByMap(workbook, sheet, currentRow, tableParam, data);
         return workbook;
     }
@@ -158,20 +171,26 @@ public class ExcelExport {
             Sheet sheet = workbook.createSheet(tableParam.getSheetName()+j);
             //冻结列
             sheet.createFreezePane(tableParam.getFreezeColSplit(),tableParam.getFreezeRowSplit());
+            //合并单元格
+            if(tableParam.getMergeRegion() != null && tableParam.getMergeRegion().size() > 0){
+                for (CellRangeAddress cellAddresses : tableParam.getMergeRegion()) {
+                    sheet.addMergedRegion(cellAddresses);
+                }
+            }
 
             //开始写入的行号
-            Integer startRow = tableParam.getStartRow();
+            Integer writeRow = tableParam.getWriteRow();
 
             //创建标题行
             if(tableParam.getCreateHeadRow()){
                     /*创建标题行*/
-                Row row = sheet.createRow(startRow);// 创建行,从0开始
+                Row row = sheet.createRow(writeRow);// 创建行,从0开始
                 //标题设置
                 setHeadRow(workbook,row,tableParam);
             }
 
             //当前数据处理到的行数,开始时为标题行的下一行（每个sheet重新计算）
-            int currentRow = startRow+1;
+            int currentRow = writeRow+1;
 
             //本次执行了多少页
             int index = 0;
@@ -318,6 +337,7 @@ public class ExcelExport {
         //加粗
         font.setBold(tableParam.getHeadRowStyle().getHeadBold());
         style.setFont(font);
+
         //居中
         style.setAlignment(tableParam.getHeadRowStyle().getHorizontalAlignment());
         List<Col> columnParams = tableParam.getCols();
@@ -471,14 +491,19 @@ public class ExcelExport {
      * @return CellStyle
      */
     private static CellStyle setCellStyle(Workbook workbook, ColStyle colStyle){
-        FontStyle fontStyle = colStyle.getFontStyle();
-        if(fontStyle != null){
-            //单元格样式
-            CellStyle cellStyle = workbook.createCellStyle();
+        //单元格样式
+        CellStyle cellStyle = null;
 
+        FontStyle fontStyle = colStyle.getFontStyle();
+        HorizontalAlignment horizontalAlignment = colStyle.getHorizontalAlignment();
+        VerticalAlignment verticalAlignment = colStyle.getVerticalAlignment();
+        if(fontStyle != null || horizontalAlignment != null || verticalAlignment != null){
+            cellStyle = workbook.createCellStyle();
+        }
+
+        if(fontStyle != null){
             //字体样式
             Font font = workbook.createFont();
-
             if(fontStyle.getBold() != null){
                 font.setBold(fontStyle.getBold());
             }
@@ -504,9 +529,14 @@ public class ExcelExport {
                 font.setFontName(fontStyle.getFontName());
             }
             cellStyle.setFont(font);
-            return cellStyle;
         }
-        return null;
+        if(horizontalAlignment != null){
+            cellStyle.setAlignment(horizontalAlignment);
+        }
+        if(verticalAlignment != null){
+            cellStyle.setVerticalAlignment(verticalAlignment);
+        }
+        return cellStyle;
     }
 
 
