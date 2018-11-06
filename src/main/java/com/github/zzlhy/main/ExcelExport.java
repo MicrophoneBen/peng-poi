@@ -4,6 +4,7 @@ package com.github.zzlhy.main;
 import com.github.zzlhy.entity.*;
 import com.github.zzlhy.func.ConvertValue;
 import com.github.zzlhy.func.GeneratorDataHandler;
+import com.github.zzlhy.util.Lists;
 import com.github.zzlhy.util.Utils;
 import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFDataValidation;
@@ -25,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -66,16 +68,15 @@ public class ExcelExport {
                 sheet.addMergedRegion(cellAddresses);
             }
         }
+        //下拉列表设置  （考虑到只有模板导出需要此功能,所以只有对象普通导出可以设置下拉列表）
+        dropdownConfig(tableParam, workbook, sheet);
+
         //开始行
         Integer writeRow = tableParam.getWriteRow();
 
-        //创建标题
-        if(tableParam.getCreateHeadRow()){
-            /*创建标题行*/
-            Row row = sheet.createRow(writeRow);// 创建行,从0开始
-            //标题设置
-            setHeadRow(workbook,row,tableParam);
-        }
+        //标题行设置
+        setHeadRow(workbook,sheet,tableParam);
+
         //当前数据处理到的行数,开始时为标题行的下一行（每个sheet重新计算）
         int currentRow = writeRow+1;
         addRows(workbook, sheet, currentRow, tableParam, data);
@@ -112,17 +113,15 @@ public class ExcelExport {
                 sheet.addMergedRegion(cellAddresses);
             }
         }
+        //下拉列表设置  （考虑到只有模板导出需要此功能,所以只有对象普通导出可以设置下拉列表）
+        dropdownConfig(tableParam, workbook, sheet);
 
         //开始行
         Integer writeRow = tableParam.getWriteRow();
 
-        //创建标题
-        if(tableParam.getCreateHeadRow()){
-            /*创建标题行*/
-            Row row = sheet.createRow(writeRow);// 创建行,从0开始
-            //标题设置
-            setHeadRow(workbook,row,tableParam);
-        }
+        //标题行设置
+        setHeadRow(workbook,sheet,tableParam);
+
         //当前数据处理到的行数,开始时为标题行的下一行（每个sheet重新计算）
         int currentRow = writeRow+1;
         addRowsByMap(workbook, sheet, currentRow, tableParam, data);
@@ -181,13 +180,8 @@ public class ExcelExport {
             //开始写入的行号
             Integer writeRow = tableParam.getWriteRow();
 
-            //创建标题行
-            if(tableParam.getCreateHeadRow()){
-                    /*创建标题行*/
-                Row row = sheet.createRow(writeRow);// 创建行,从0开始
-                //标题设置
-                setHeadRow(workbook,row,tableParam);
-            }
+            //标题行设置
+            setHeadRow(workbook,sheet,tableParam);
 
             //当前数据处理到的行数,开始时为标题行的下一行（每个sheet重新计算）
             int currentRow = writeRow+1;
@@ -234,9 +228,6 @@ public class ExcelExport {
             _row.setHeightInPoints(tableParam.getHeight());
 
             for (int j=0;j<tableParam.getCols().size();j++) {
-                //设置列宽
-                sheet.setColumnWidth(j,tableParam.getCols().get(j).getWidth()*256);
-
                 // 创建行的单元格
                 Cell cell = _row.createCell(j);
 
@@ -245,7 +236,6 @@ public class ExcelExport {
                     cell.setCellFormula(tableParam.getCols().get(j).getFormula());
                     continue;
                 }
-
 
                 //获取属性
                 PropertyDescriptor propertyDescriptor = new PropertyDescriptor(tableParam.getCols().get(j).getKey(), data.get(k).getClass());
@@ -293,9 +283,6 @@ public class ExcelExport {
             _row.setHeightInPoints(tableParam.getHeight());
 
             for (int j=0;j<tableParam.getCols().size();j++) {
-                //设置列宽
-                sheet.setColumnWidth(j,tableParam.getCols().get(j).getWidth()*256);
-
                 // 创建行的单元格
                 Cell cell = _row.createCell(j);
 
@@ -327,26 +314,30 @@ public class ExcelExport {
     /**
      * 标题行设置
      * @param workbook workbook
-     * @param row row
+     * @param sheet sheet
      * @param tableParam tableParam
      */
-    private static void setHeadRow(Workbook workbook, Row row, TableParam tableParam){
-        //标题行样式
-        CellStyle style = workbook.createCellStyle();
-        Font font = workbook.createFont();
-        //加粗
-        font.setBold(tableParam.getHeadRowStyle().getHeadBold());
-        style.setFont(font);
+    private static void setHeadRow(Workbook workbook, Sheet sheet, TableParam tableParam){
+        if(tableParam.getCreateHeadRow()){
+            /*创建标题行*/
+            Row row = sheet.createRow(tableParam.getWriteRow());
+            //标题行样式
+            CellStyle style = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            //加粗
+            font.setBold(tableParam.getHeadRowStyle().getHeadBold());
+            style.setFont(font);
 
-        //居中
-        style.setAlignment(tableParam.getHeadRowStyle().getHorizontalAlignment());
-        List<Col> columnParams = tableParam.getCols();
-        for(int i=0;i<columnParams.size();i++){
-            // 创建行的单元格,也是从0开始
-            Cell cell = row.createCell(i);
-            // 设置单元格内容
-            cell.setCellValue(columnParams.get(i).getTitle());
-            cell.setCellStyle(style);
+            //居中
+            style.setAlignment(tableParam.getHeadRowStyle().getHorizontalAlignment());
+            List<Col> columnParams = tableParam.getCols();
+            for(int i=0;i<columnParams.size();i++){
+                // 创建行的单元格,也是从0开始
+                Cell cell = row.createCell(i);
+                // 设置单元格内容
+                cell.setCellValue(columnParams.get(i).getTitle());
+                cell.setCellStyle(style);
+            }
         }
     }
 
@@ -539,28 +530,71 @@ public class ExcelExport {
         return cellStyle;
     }
 
-
-    private static void setDropDownList(XSSFSheet sheet,String[] list) {
-        XSSFDataValidationHelper dvHelper = new XSSFDataValidationHelper(sheet);
-        XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint) dvHelper.createExplicitListConstraint(list);
-        CellRangeAddressList addressList = null;
-        XSSFDataValidation validation = null;
-        for (int i = 0; i < 100; i++) {
-            addressList = new CellRangeAddressList(i, i, 0, 0);
-            validation = (XSSFDataValidation) dvHelper.createValidation(
-                    dvConstraint, addressList);
-            validation.setSuppressDropDownArrow(true);
-            validation.setShowErrorBox(true);
-            sheet.addValidationData(validation);
+    /**
+     * 设置下拉列表
+     * @param sheet sheet
+     * @param params 下拉列表配置
+     */
+    private static void setDropDownList(XSSFSheet sheet,List<DropdownParam> params) {
+        DataValidationHelper helper = sheet.getDataValidationHelper();
+        for (DropdownParam param : params) {
+            CellRangeAddressList addressList = new CellRangeAddressList(param.getFirstRow(), param.getLastRow(), param.getFirstCol(),param.getLastCol());
+            DataValidationConstraint constraint = helper.createExplicitListConstraint(param.getDropdownList());
+            DataValidation dataValidation = helper.createValidation(constraint, addressList);
+            dataValidation.createErrorBox("数据非法提醒", "数据不规范,请选择下拉列表中的数据");
+            //  处理Excel兼容性问题
+            if (dataValidation instanceof XSSFDataValidation) {
+                dataValidation.setSuppressDropDownArrow(true);
+                dataValidation.setShowErrorBox(true);
+            } else {
+                dataValidation.setSuppressDropDownArrow(false);
+            }
+            sheet.addValidationData(dataValidation);
         }
     }
-    private static void setDropDownList(HSSFSheet sheet, String[] list) {
-        CellRangeAddressList regions = new CellRangeAddressList(0, 9, 0, 0);
-        //创建下拉列表数据
-        DVConstraint constraint = DVConstraint.createExplicitListConstraint(list);
-        //绑定
-        HSSFDataValidation dataValidation = new HSSFDataValidation(regions, constraint);
-        sheet.addValidationData(dataValidation);
+
+    /**
+     * 设置下拉列表
+     * @param sheet sheet
+     * @param params 下拉列表配置
+     */
+    private static void setDropDownList(HSSFSheet sheet,List<DropdownParam> params) {
+        for (DropdownParam param : params) {
+            CellRangeAddressList regions = new CellRangeAddressList(param.getFirstRow(), param.getLastRow(), param.getFirstCol(),param.getLastCol());
+            //创建下拉列表数据
+            DVConstraint constraint = DVConstraint.createExplicitListConstraint(param.getDropdownList());
+            //绑定
+            HSSFDataValidation dataValidation = new HSSFDataValidation(regions, constraint);
+            dataValidation.createErrorBox("数据非法提醒", "数据不规范,请选择下拉列表中的数据");
+            sheet.addValidationData(dataValidation);
+        }
+
+    }
+
+    /**
+     * 下拉列表配置
+     * @param tableParam
+     * @param workbook
+     * @param sheet
+     */
+    private static void dropdownConfig(TableParam tableParam, Workbook workbook, Sheet sheet) {
+        List<Col> cols = tableParam.getCols();
+        List<DropdownParam> dropdownParams = new ArrayList<>();
+        for (int i = 0; i < cols.size(); i++) {
+            if(cols.get(i).getDropdownList() != null){
+                DropdownParam temp = new DropdownParam(tableParam.getWriteRow(),1000,i,i,cols.get(i).getDropdownList());
+                dropdownParams.add(temp);
+            }
+            //设置列宽
+            sheet.setColumnWidth(i,tableParam.getCols().get(i).getWidth()*256);
+        }
+        if(dropdownParams.size() > 0) {
+            if (workbook instanceof XSSFWorkbook) {
+                setDropDownList((XSSFSheet) sheet, dropdownParams);
+            } else if (workbook instanceof HSSFWorkbook) {
+                setDropDownList((HSSFSheet) sheet, dropdownParams);
+            }
+        }
     }
 
 }

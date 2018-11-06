@@ -33,12 +33,12 @@ public class TestPOI {
         //导出参数配置
         List<Col> cols = Lists.newArrayList(
                 new Col("姓名","name",ColStyle.of().setHorizontalAlignment(HorizontalAlignment.CENTER).setVerticalAlignment(VerticalAlignment.CENTER)),
-                Col.of("年龄","age"),
+                Col.of("年龄","age",new String[]{"10","20","30"}),
                 new Col("生日","birthday",ColStyle.of(Color.ORANGE.getIndex())),
                 new Col("启用","active",ColStyle.of().setHorizontalAlignment(HorizontalAlignment.RIGHT)),
                 new Col("创建日期","createDate",25,ColStyle.of(FontStyle.of(Color.RED.getIndex()).setUnderline((byte)1))),
-                new Col("统计",30,"B2:B1000+1"),
-                new Col("随机数",30,"int(RAND()*1000)")
+                new Col("统计",30,"B2:B1000+1").setDropdownList(new String[]{"A","B","C"}),
+                new Col("随机数",10,"int(RAND()*1000)")
         );
 
         List<Person> list = new ArrayList<>();
@@ -49,7 +49,7 @@ public class TestPOI {
         list.add(new Person("波多",18, LocalDate.of(1990,8,15),true, LocalDateTime.now()));
 
         Workbook workbook = ExcelExport.exportExcelByObject(
-                TableParam.of(cols),
+                TableParam.of(cols).setExcelType(ExcelType.XLSX),
                 list
         );
 

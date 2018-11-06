@@ -30,6 +30,9 @@ public class Col {
     //列样式
     private ColStyle colStyle=new ColStyle();
 
+    //下拉列表的数组
+    private String[] dropdownList;
+
     public static Col of() {
         return new Col();
     }
@@ -40,6 +43,10 @@ public class Col {
 
     public static Col of(String title, String key) {
         return of(key).setTitle(title);
+    }
+
+    public static Col of(String title, String key, String[] dropdownList) {
+        return of(key).setTitle(title).setDropdownList(dropdownList);
     }
 
     public static Col of(String key, ConvertValue convertValue) {
@@ -58,8 +65,16 @@ public class Col {
         return of(title,key).setWidth(width);
     }
 
+    public static Col of(String title, String key, int width, String[] dropdownList) {
+        return of(title,key,width).setDropdownList(dropdownList);
+    }
+
     public static Col of(String title, String key, ConvertValue convertValue) {
         return of(title,key).setConvertValue(convertValue);
+    }
+
+    public static Col of(String title, String key, ConvertValue convertValue, String[] dropdownList) {
+        return of(title,key).setConvertValue(convertValue).setDropdownList(dropdownList);
     }
 
     public static Col of(String title, String key, ColStyle colStyle) {
@@ -91,6 +106,12 @@ public class Col {
         this.key = key;
     }
 
+    public Col(String title, String key, String[] dropdownList) {
+        this.title = title;
+        this.key = key;
+        this.dropdownList = dropdownList;
+    }
+
     public Col(String key, ConvertValue convertValue) {
         this.key = key;
         this.convertValue = convertValue;
@@ -114,10 +135,24 @@ public class Col {
         this.width = width;
     }
 
+    public Col(String title, String key, int width, String[] dropdownList) {
+        this.title = title;
+        this.key = key;
+        this.width = width;
+        this.dropdownList = dropdownList;
+    }
+
     public Col(String title, String key, ConvertValue convertValue) {
         this.title = title;
         this.key = key;
         this.convertValue = convertValue;
+    }
+
+    public Col(String title, String key, ConvertValue convertValue, String[] dropdownList) {
+        this.title = title;
+        this.key = key;
+        this.convertValue = convertValue;
+        this.dropdownList = dropdownList;
     }
 
     public Col(String title, String key, ColStyle colStyle) {
@@ -208,6 +243,15 @@ public class Col {
 
     public Col setColStyle(ColStyle columnStyle) {
         this.colStyle = columnStyle;
+        return this;
+    }
+
+    public String[] getDropdownList() {
+        return dropdownList;
+    }
+
+    public Col setDropdownList(String[] dropdownList) {
+        this.dropdownList = dropdownList;
         return this;
     }
 }
