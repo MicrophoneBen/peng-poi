@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Created by Administrator on 2018-10-20.
@@ -10,7 +11,7 @@ public class Person {
 
     private Integer age;
 
-    private LocalDate birthday;
+    private Date birthday;
 
     private Boolean active;
 
@@ -32,11 +33,11 @@ public class Person {
         this.age = age;
     }
 
-    public LocalDate getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(LocalDate birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 
@@ -59,7 +60,7 @@ public class Person {
     public Person() {
     }
 
-    public Person(String name, Integer age, LocalDate birthday, Boolean active, LocalDateTime createDate) {
+    public Person(String name, Integer age, Date birthday, Boolean active, LocalDateTime createDate) {
         this.name = name;
         this.age = age;
         this.birthday = birthday;

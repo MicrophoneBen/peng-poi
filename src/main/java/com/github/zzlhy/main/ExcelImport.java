@@ -300,7 +300,7 @@ public class ExcelImport {
             } else if (propertyType == BigDecimal.class) {
                 writeMethod.invoke(instance, BigDecimal.valueOf(Double.parseDouble(value)));
             }else if (propertyType == Date.class) {
-                if (Utils.isEmpty(format)) {
+                if (Utils.notEmpty(format)) {
                     sdf = new SimpleDateFormat(format);
                 }
                 Date date = sdf.parse(value);

@@ -573,13 +573,13 @@ public class ExcelExport {
 
     /**
      * 下拉列表配置
-     * @param tableParam
-     * @param workbook
-     * @param sheet
+     * @param tableParam tableParam
+     * @param workbook workbook
+     * @param sheet sheet
      */
     private static void dropdownConfig(TableParam tableParam, Workbook workbook, Sheet sheet) {
         List<Col> cols = tableParam.getCols();
-        List<DropdownParam> dropdownParams = new ArrayList<>();
+        List<DropdownParam> dropdownParams = new ArrayList<DropdownParam>();
         for (int i = 0; i < cols.size(); i++) {
             if(cols.get(i).getDropdownList() != null){
                 DropdownParam temp = new DropdownParam(tableParam.getWriteRow(),1000,i,i,cols.get(i).getDropdownList());

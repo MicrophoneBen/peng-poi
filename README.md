@@ -15,7 +15,7 @@ Add Maven Dependency:
 <dependency>
     <groupId>com.github.zzlhy</groupId>
     <artifactId>peng-poi</artifactId>
-    <version>1.0</version>
+    <version>1.2.0</version>
 </dependency>
 
 ```
@@ -115,7 +115,7 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
     //每个sheet允许的数据行数,超过此行数会创建新的sheet (xlsx时最大值为1048576)
     int sheetDataTotal = 500000;
     //导出时开始写入的起始行,默认从0开始
-    int startRow=0;
+    int writeRow=0;
     //导入时,起始读取行
     int readRow=1;
     //行高度
@@ -130,6 +130,8 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
     private int freezeColSplit = 0;
     //固定行的行号
     private int freezeRowSplit = 0;
+    //合并单元格
+    private List<CellRangeAddress> mergeRegion;
     //列属性数组
     List<Col> cols;
 ```
@@ -149,6 +151,8 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
        ConvertValue convertValue;
        //列样式
        ColStyle colStyle=new ColStyle();
+       //下拉列表的数组
+       private String[] dropdownList;
 ```
 
 **License:**
