@@ -68,14 +68,12 @@ public class ExcelExport {
                 sheet.addMergedRegion(cellAddresses);
             }
         }
-        //下拉列表设置  （考虑到只有模板导出需要此功能,所以只有对象普通导出可以设置下拉列表）
-        dropdownConfig(tableParam, workbook, sheet);
 
         //开始行
         Integer writeRow = tableParam.getWriteRow();
 
-        //标题行设置
-        setHeadRow(workbook,sheet,tableParam);
+        //标题行设置、下拉列表设置
+        rowConfig(workbook,sheet,tableParam);
 
         //当前数据处理到的行数,开始时为标题行的下一行（每个sheet重新计算）
         int currentRow = writeRow+1;
@@ -113,14 +111,12 @@ public class ExcelExport {
                 sheet.addMergedRegion(cellAddresses);
             }
         }
-        //下拉列表设置  （考虑到只有模板导出需要此功能,所以只有对象普通导出可以设置下拉列表）
-        dropdownConfig(tableParam, workbook, sheet);
 
         //开始行
         Integer writeRow = tableParam.getWriteRow();
 
-        //标题行设置
-        setHeadRow(workbook,sheet,tableParam);
+        //标题行设置、下拉列表设置
+        rowConfig(workbook,sheet,tableParam);
 
         //当前数据处理到的行数,开始时为标题行的下一行（每个sheet重新计算）
         int currentRow = writeRow+1;
@@ -181,7 +177,7 @@ public class ExcelExport {
             Integer writeRow = tableParam.getWriteRow();
 
             //标题行设置
-            setHeadRow(workbook,sheet,tableParam);
+            rowConfig(workbook,sheet,tableParam);
 
             //当前数据处理到的行数,开始时为标题行的下一行（每个sheet重新计算）
             int currentRow = writeRow+1;
@@ -312,12 +308,14 @@ public class ExcelExport {
     }
 
     /**
-     * 标题行设置
+     * 行配置 （标题、下拉）
      * @param workbook workbook
      * @param sheet sheet
      * @param tableParam tableParam
      */
-    private static void setHeadRow(Workbook workbook, Sheet sheet, TableParam tableParam){
+    private static void rowConfig(Workbook workbook, Sheet sheet, TableParam tableParam){
+        List<Col> cols = tableParam.getCols();
+        //标题配置
         if(tableParam.getCreateHeadRow()){
             /*创建标题行*/
             Row row = sheet.createRow(tableParam.getWriteRow());
@@ -327,16 +325,32 @@ public class ExcelExport {
             //加粗
             font.setBold(tableParam.getHeadRowStyle().getHeadBold());
             style.setFont(font);
-
             //居中
             style.setAlignment(tableParam.getHeadRowStyle().getHorizontalAlignment());
-            List<Col> columnParams = tableParam.getCols();
-            for(int i=0;i<columnParams.size();i++){
+            for(int i=0;i<cols.size();i++){
                 // 创建行的单元格,也是从0开始
                 Cell cell = row.createCell(i);
                 // 设置单元格内容
-                cell.setCellValue(columnParams.get(i).getTitle());
+                cell.setCellValue(cols.get(i).getTitle());
                 cell.setCellStyle(style);
+            }
+        }
+        //读取下拉菜单配置
+        List<DropdownParam> dropdownParams = new ArrayList<DropdownParam>();
+        for (int i = 0; i < cols.size(); i++) {
+            if(cols.get(i).getDropdownList() != null){
+                DropdownParam temp = new DropdownParam(tableParam.getWriteRow(),200,i,i,cols.get(i).getDropdownList());
+                dropdownParams.add(temp);
+            }
+
+            //设置列宽
+            sheet.setColumnWidth(i,tableParam.getCols().get(i).getWidth()*256);
+        }
+        if(dropdownParams.size() > 0) {
+            if (workbook instanceof XSSFWorkbook) {
+                setDropDownList((XSSFSheet) sheet, dropdownParams);
+            } else if (workbook instanceof HSSFWorkbook) {
+                setDropDownList((HSSFSheet) sheet, dropdownParams);
             }
         }
     }
@@ -569,32 +583,6 @@ public class ExcelExport {
             sheet.addValidationData(dataValidation);
         }
 
-    }
-
-    /**
-     * 下拉列表配置
-     * @param tableParam tableParam
-     * @param workbook workbook
-     * @param sheet sheet
-     */
-    private static void dropdownConfig(TableParam tableParam, Workbook workbook, Sheet sheet) {
-        List<Col> cols = tableParam.getCols();
-        List<DropdownParam> dropdownParams = new ArrayList<DropdownParam>();
-        for (int i = 0; i < cols.size(); i++) {
-            if(cols.get(i).getDropdownList() != null){
-                DropdownParam temp = new DropdownParam(tableParam.getWriteRow(),1000,i,i,cols.get(i).getDropdownList());
-                dropdownParams.add(temp);
-            }
-            //设置列宽
-            sheet.setColumnWidth(i,tableParam.getCols().get(i).getWidth()*256);
-        }
-        if(dropdownParams.size() > 0) {
-            if (workbook instanceof XSSFWorkbook) {
-                setDropDownList((XSSFSheet) sheet, dropdownParams);
-            } else if (workbook instanceof HSSFWorkbook) {
-                setDropDownList((HSSFSheet) sheet, dropdownParams);
-            }
-        }
     }
 
 }

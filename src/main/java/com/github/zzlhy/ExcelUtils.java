@@ -159,7 +159,7 @@ public class ExcelUtils {
      * @throws InvocationTargetException e
      */
     public static List<?> excelImport(InputStream stream, TableParam tableParam, Class<?> clazz, SaveDataHandler saveDataHandler, ValidateDataHandler validateDataHandler) throws IllegalAccessException, ParseException, IntrospectionException, IOException, InstantiationException, InvalidFormatException, InvocationTargetException {
-        return ExcelImport.importExcel(stream,tableParam,clazz,saveDataHandler,validateDataHandler);
+        return ExcelImport.importExcel(stream,tableParam,clazz,saveDataHandler,validateDataHandler,null);
     }
 
     /**

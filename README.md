@@ -15,7 +15,7 @@ Add Maven Dependency:
 <dependency>
     <groupId>com.github.zzlhy</groupId>
     <artifactId>peng-poi</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.2</version>
 </dependency>
 
 ```
@@ -154,6 +154,10 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
        //下拉列表的数组
        private String[] dropdownList;
 ```
+
+#### 版本计划:
+- ​支持对象注解
+- 支持自定义样式
 
 **License:**
 

@@ -138,26 +138,6 @@ public class ExcelImport {
     }
 
     /**
-     * 导入-- 支持xls和xlsx  (说明：支持大量数据导入,减少内存消耗,支持多个sheet读取)  不需要处理条数变化回调
-     * @param stream 文件流
-     * @param tableParam Excel配置对象
-     * @param clazz Class
-     * @param saveDataHandler 保存数据的方法
-     * @param validateDataHandler 效验数据的方法
-     * @return 导入失败的数据
-     * @throws IOException e
-     * @throws IllegalAccessException e
-     * @throws InstantiationException e
-     * @throws IntrospectionException e
-     * @throws InvocationTargetException e
-     * @throws ParseException e
-     * @throws InvalidFormatException e
-     */
-    public static List<?> importExcel(InputStream stream, TableParam tableParam, Class<?> clazz, SaveDataHandler saveDataHandler, ValidateDataHandler validateDataHandler) throws IOException, IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException, ParseException, InvalidFormatException {
-        return importExcel(stream,tableParam,clazz,saveDataHandler,validateDataHandler,null);
-    }
-
-    /**
      * 普通导入 -- 支持xls和xlsx
      * @param stream 文件流
      * @param tableParam Excel配置对象
