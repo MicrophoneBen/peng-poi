@@ -2,14 +2,13 @@ package com.github.zzlhy.main;
 
 
 import com.github.zzlhy.entity.*;
+import com.github.zzlhy.entity.Color;
 import com.github.zzlhy.func.ConvertValue;
 import com.github.zzlhy.func.GeneratorDataHandler;
 import com.github.zzlhy.util.Lists;
 import com.github.zzlhy.util.Utils;
-import org.apache.poi.hssf.usermodel.DVConstraint;
-import org.apache.poi.hssf.usermodel.HSSFDataValidation;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
@@ -41,12 +40,13 @@ public class ExcelExport {
      * 数据导出 -- 对象方式 (说明:普通导出,数据量较少情况导出)
      * @param tableParam Excel参数对象
      * @param data data
+     * @param exportStyle 单元格样式实现
      * @return Workbook
      * @throws InvocationTargetException e
      * @throws IllegalAccessException e
      * @throws IntrospectionException e
      */
-    public static Workbook exportExcelByObject(TableParam tableParam, List<?> data) throws InvocationTargetException, IllegalAccessException, IntrospectionException {
+    public static Workbook exportExcelByObject(TableParam tableParam, List<?> data,ExportStyle exportStyle) throws InvocationTargetException, IllegalAccessException, IntrospectionException {
 
         /*创建Workbook和Sheet*/
         Workbook workbook;
@@ -77,7 +77,7 @@ public class ExcelExport {
 
         //当前数据处理到的行数,开始时为标题行的下一行（每个sheet重新计算）
         int currentRow = writeRow+1;
-        addRows(workbook, sheet, currentRow, tableParam, data);
+        addRows(workbook, sheet, currentRow, tableParam, exportStyle, data);
         return workbook;
     }
 
@@ -85,12 +85,13 @@ public class ExcelExport {
      * 数据导出 -- Map方式 (说明:普通导出,数据量较少情况导出)
      * @param tableParam Excel参数对象
      * @param data data
+     * @param exportStyle 单元格样式实现
      * @return Workbook
      * @throws InvocationTargetException e
      * @throws IllegalAccessException e
      * @throws IntrospectionException e
      */
-    public static Workbook exportExcelByMap(TableParam tableParam, List<? extends Map<?,?>> data) throws InvocationTargetException, IllegalAccessException, IntrospectionException {
+    public static Workbook exportExcelByMap(TableParam tableParam, List<? extends Map<?,?>> data,ExportStyle exportStyle) throws InvocationTargetException, IllegalAccessException, IntrospectionException {
         /*创建Workbook和Sheet*/
         Workbook workbook;
         if(ExcelType.XLSX.equals(tableParam.getExcelType())){
@@ -120,7 +121,7 @@ public class ExcelExport {
 
         //当前数据处理到的行数,开始时为标题行的下一行（每个sheet重新计算）
         int currentRow = writeRow+1;
-        addRowsByMap(workbook, sheet, currentRow, tableParam, data);
+        addRowsByMap(workbook, sheet, currentRow, tableParam, exportStyle, data);
         return workbook;
     }
 
@@ -129,12 +130,13 @@ public class ExcelExport {
      * @param tableParam Excel参数对象
      * @param total 数据总条数
      * @param generatorDataHandler 生成数据的方法
+     * @param exportStyle 单元格样式实现
      * @return SXSSFWorkbook
      * @throws InvocationTargetException e
      * @throws IllegalAccessException e
      * @throws IntrospectionException e
      */
-    public static SXSSFWorkbook exportExcelBigData(TableParam tableParam, long total,GeneratorDataHandler generatorDataHandler) throws InvocationTargetException, IllegalAccessException, IntrospectionException {
+    public static SXSSFWorkbook exportExcelBigData(TableParam tableParam, long total,GeneratorDataHandler generatorDataHandler, ExportStyle exportStyle) throws InvocationTargetException, IllegalAccessException, IntrospectionException {
 
         /*创建Workbook*/
         SXSSFWorkbook workbook = new SXSSFWorkbook(100);//在内存中保持100行，超过100行将被刷新到磁盘
@@ -188,7 +190,7 @@ public class ExcelExport {
             //开始循环加入数据(分页查询数据)
             for (int i = currentPage; i <= page; i++) {
                 list = generatorDataHandler.generatorData(i,pageSize);
-                int tempRow = addRows(workbook, sheet, currentRow, tableParam, list);
+                int tempRow = addRows(workbook, sheet, currentRow, tableParam,exportStyle, list);
                 list.clear();
                 currentRow = tempRow;
                 //如果超过了限制的行数则跳出,进行新的sheet写入
@@ -209,13 +211,14 @@ public class ExcelExport {
      * @param sheet sheet
      * @param currentRow  当前处理到的行号
      * @param tableParam  配置参数
+     * @param exportStyle 单元格样式实现
      * @param data        数据
      * @return 当前处理到的行号
      * @throws InvocationTargetException e
      * @throws IllegalAccessException e
      * @throws IntrospectionException e
      */
-    private static int addRows(Workbook workbook,Sheet sheet, int currentRow, TableParam tableParam, List<?> data) throws InvocationTargetException, IllegalAccessException, IntrospectionException {
+    private static int addRows(Workbook workbook,Sheet sheet, int currentRow, TableParam tableParam, ExportStyle exportStyle, List<?> data) throws InvocationTargetException, IllegalAccessException, IntrospectionException {
         //创建数据
         for(int k = 0; k<data.size(); k++) {
             // 创建行
@@ -226,6 +229,14 @@ public class ExcelExport {
             for (int j=0;j<tableParam.getCols().size();j++) {
                 // 创建行的单元格
                 Cell cell = _row.createCell(j);
+
+                //样式获取设置
+                if(exportStyle != null){
+                    CellStyle cellStyle = exportStyle.createCellStyle(workbook, tableParam.getCols().get(j).getColStyle());
+                    if(cellStyle != null) {
+                        cell.setCellStyle(cellStyle);
+                    }
+                }
 
                 //判断列是否为设置公式的列,设置公式不根据key生成数据,直接写入公式即可
                 if(Utils.notEmpty(tableParam.getCols().get(j).getFormula())){
@@ -246,13 +257,6 @@ public class ExcelExport {
                 ConvertValue convertValue = tableParam.getCols().get(j).getConvertValue();//需要转换值的方法对象
 
                 setCell(cell,result,format,convertValue);
-
-                //样式获取设置
-                CellStyle cellStyle = setCellStyle(workbook, tableParam.getCols().get(j).getColStyle());
-                if(cellStyle != null){
-                    cell.setCellStyle(cellStyle);
-                }
-
             }
             currentRow++;
         }
@@ -264,13 +268,14 @@ public class ExcelExport {
      * @param sheet sheet
      * @param currentRow  当前处理到的行号(从哪行开始创建行)
      * @param tableParam  配置参数
+     * @param exportStyle 单元格样式实现
      * @param data        数据
      * @return 当前处理到的行号
      * @throws InvocationTargetException e
      * @throws IllegalAccessException e
      * @throws IntrospectionException e
      */
-    private static int addRowsByMap(Workbook workbook, Sheet sheet, int currentRow, TableParam tableParam, List<? extends Map<?,?>> data) throws InvocationTargetException, IllegalAccessException, IntrospectionException {
+    private static int addRowsByMap(Workbook workbook, Sheet sheet, int currentRow, TableParam tableParam, ExportStyle exportStyle, List<? extends Map<?,?>> data) throws InvocationTargetException, IllegalAccessException, IntrospectionException {
         //创建数据
         for(int k = 0; k<data.size(); k++) {
             // 创建行
@@ -281,6 +286,14 @@ public class ExcelExport {
             for (int j=0;j<tableParam.getCols().size();j++) {
                 // 创建行的单元格
                 Cell cell = _row.createCell(j);
+
+                //样式获取设置
+                if(exportStyle != null){
+                    CellStyle cellStyle = exportStyle.createCellStyle(workbook, tableParam.getCols().get(j).getColStyle());
+                    if(cellStyle != null) {
+                        cell.setCellStyle(cellStyle);
+                    }
+                }
 
                 //判断列是否为设置公式的列,设置公式不根据key生成数据,直接写入公式即可
                 if(Utils.notEmpty(tableParam.getCols().get(j).getFormula())){
@@ -294,13 +307,6 @@ public class ExcelExport {
                 String format = tableParam.getCols().get(j).getFormat();//获取日期的格式化的格式
                 ConvertValue convertValue = tableParam.getCols().get(j).getConvertValue();//需要转换值的方法对象
                 setCell(cell,result,format,convertValue);
-
-                //样式获取设置
-                CellStyle cellStyle = setCellStyle(workbook, tableParam.getCols().get(j).getColStyle());
-                if(cellStyle != null){
-                    cell.setCellStyle(cellStyle);
-                }
-
             }
             currentRow++;
         }
@@ -487,61 +493,6 @@ public class ExcelExport {
                 cell.setCellValue(empty);
             }
         }
-    }
-
-    /**
-     * 设置单元格样式
-     * @param workbook workbook
-     * @param colStyle colStyle
-     * @return CellStyle
-     */
-    private static CellStyle setCellStyle(Workbook workbook, ColStyle colStyle){
-        //单元格样式
-        CellStyle cellStyle = null;
-
-        FontStyle fontStyle = colStyle.getFontStyle();
-        HorizontalAlignment horizontalAlignment = colStyle.getHorizontalAlignment();
-        VerticalAlignment verticalAlignment = colStyle.getVerticalAlignment();
-        if(fontStyle != null || horizontalAlignment != null || verticalAlignment != null){
-            cellStyle = workbook.createCellStyle();
-        }
-
-        if(fontStyle != null){
-            //字体样式
-            Font font = workbook.createFont();
-            if(fontStyle.getBold() != null){
-                font.setBold(fontStyle.getBold());
-            }
-            if(fontStyle.getItalic() != null){
-                font.setItalic(fontStyle.getItalic());
-            }
-            if(fontStyle.getStrikeout() != null){
-                font.setStrikeout(fontStyle.getStrikeout());
-            }
-            if(fontStyle.getColor() != null){
-                font.setColor(fontStyle.getColor());
-            }
-            if(fontStyle.getHeightInPoints() != null){
-                font.setFontHeightInPoints(fontStyle.getHeightInPoints());
-            }
-            if(fontStyle.getUnderline() != null){
-                font.setUnderline(fontStyle.getUnderline());
-            }
-            if(fontStyle.getTypeOffset() != null){
-                font.setTypeOffset(fontStyle.getTypeOffset());
-            }
-            if(Utils.notEmpty(fontStyle.getFontName())){
-                font.setFontName(fontStyle.getFontName());
-            }
-            cellStyle.setFont(font);
-        }
-        if(horizontalAlignment != null){
-            cellStyle.setAlignment(horizontalAlignment);
-        }
-        if(verticalAlignment != null){
-            cellStyle.setVerticalAlignment(verticalAlignment);
-        }
-        return cellStyle;
     }
 
     /**

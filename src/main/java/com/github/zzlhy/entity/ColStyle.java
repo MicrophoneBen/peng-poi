@@ -7,7 +7,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
  * 列样式属性
  * Created by Administrator on 2017-11-29.
  */
-public class ColStyle {
+public class ColStyle extends ColStyleAbstract{
 
     //单元格水平对齐方式
     private HorizontalAlignment horizontalAlignment;
@@ -15,9 +15,11 @@ public class ColStyle {
     //单元格垂直对齐方式
     private VerticalAlignment verticalAlignment;
 
+    //单元格背景颜色
+    private Short backgroundColor;
+
     //字体设置
     private FontStyle fontStyle;
-
 
     public static ColStyle of() {
         return new ColStyle();
@@ -55,6 +57,15 @@ public class ColStyle {
 
     public ColStyle setVerticalAlignment(VerticalAlignment verticalAlignment) {
         this.verticalAlignment = verticalAlignment;
+        return this;
+    }
+
+    public Short getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public ColStyle setBackgroundColor(Short backgroundColor) {
+        this.backgroundColor = backgroundColor;
         return this;
     }
 }

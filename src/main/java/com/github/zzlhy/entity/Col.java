@@ -28,7 +28,7 @@ public class Col {
     private String formula;
 
     //列样式
-    private ColStyle colStyle=new ColStyle();
+    private ColStyleAbstract colStyle;
 
     //下拉列表的数组
     private String[] dropdownList;
@@ -77,7 +77,7 @@ public class Col {
         return of(title,key).setConvertValue(convertValue).setDropdownList(dropdownList);
     }
 
-    public static Col of(String title, String key, ColStyle colStyle) {
+    public static Col of(String title, String key, ColStyleAbstract colStyle) {
         return of(title,key).setColStyle(colStyle);
     }
 
@@ -85,7 +85,7 @@ public class Col {
         return of(title,key).setWidth(width).setFormat(format);
     }
 
-    public static Col of(String title, String key, int width, ColStyle colStyle) {
+    public static Col of(String title, String key, int width, ColStyleAbstract colStyle) {
         return of(title,key,colStyle).setWidth(width);
     }
 
@@ -155,7 +155,7 @@ public class Col {
         this.dropdownList = dropdownList;
     }
 
-    public Col(String title, String key, ColStyle colStyle) {
+    public Col(String title, String key, ColStyleAbstract colStyle) {
         this.title = title;
         this.key = key;
         this.colStyle = colStyle;
@@ -168,7 +168,7 @@ public class Col {
         this.format = format;
     }
 
-    public Col(String title, String key, int width, ColStyle colStyle) {
+    public Col(String title, String key, int width, ColStyleAbstract colStyle) {
         this.title = title;
         this.key = key;
         this.width = width;
@@ -237,12 +237,12 @@ public class Col {
         return this;
     }
 
-    public ColStyle getColStyle() {
+    public ColStyleAbstract getColStyle() {
         return colStyle;
     }
 
-    public Col setColStyle(ColStyle columnStyle) {
-        this.colStyle = columnStyle;
+    public Col setColStyle(ColStyleAbstract colStyle) {
+        this.colStyle = colStyle;
         return this;
     }
 

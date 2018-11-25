@@ -157,7 +157,6 @@ compile group: 'com.github.zzlhy', name: 'peng-poi', version: '1.0'
 
 #### 版本计划:
 - ​支持对象注解
-- 支持自定义样式
 
 **License:**
 
