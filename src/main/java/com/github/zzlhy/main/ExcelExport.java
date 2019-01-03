@@ -256,7 +256,7 @@ public class ExcelExport {
                 String format = tableParam.getCols().get(j).getFormat();//获取日期的格式化的格式
                 ConvertValue convertValue = tableParam.getCols().get(j).getConvertValue();//需要转换值的方法对象
 
-                setCell(cell,result,format,convertValue);
+                setCell(workbook,cell,result,format,convertValue);
             }
             currentRow++;
         }
@@ -306,7 +306,7 @@ public class ExcelExport {
 
                 String format = tableParam.getCols().get(j).getFormat();//获取日期的格式化的格式
                 ConvertValue convertValue = tableParam.getCols().get(j).getConvertValue();//需要转换值的方法对象
-                setCell(cell,result,format,convertValue);
+                setCell(workbook,cell,result,format,convertValue);
             }
             currentRow++;
         }
@@ -372,7 +372,7 @@ public class ExcelExport {
      * @param cell cell
      * @param result result
      */
-    private static void setCell(Cell cell, Object result, String format, ConvertValue convertValue){
+    private static void setCell(Workbook workbook, Cell cell, Object result, String format, ConvertValue convertValue){
         //设置单元格值及属性
         String resultStr = String.valueOf(result);
         if(result instanceof String){
@@ -454,9 +454,20 @@ public class ExcelExport {
                 }else{
                     strDate = sdfTime.format(date);
                 }
+                DataFormat dataFormat = workbook.createDataFormat();
+                CellStyle cellStyle = workbook.createCellStyle();
+                cellStyle.setDataFormat(dataFormat.getFormat(format));
+                cell.setCellStyle(cellStyle);
+
                 cell.setCellValue(strDate);
             }else{
                 Date empty = null;
+
+                DataFormat dataFormat = workbook.createDataFormat();
+                CellStyle cellStyle = workbook.createCellStyle();
+                cellStyle.setDataFormat(dataFormat.getFormat(format));
+                cell.setCellStyle(cellStyle);
+
                 cell.setCellValue(empty);
             }
         }else if(result instanceof LocalDate){
