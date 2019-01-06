@@ -75,6 +75,20 @@ public class ExcelExport {
         //标题行设置、下拉列表设置
         rowConfig(workbook,sheet,tableParam);
 
+        //样式对象创建,可复用
+        for (int j=0;j<tableParam.getCols().size();j++) {
+            //样式获取设置
+            if(exportStyle != null){
+                CellStyle cellStyle = exportStyle.createCellStyle(workbook, tableParam.getCols().get(j).getColStyle());
+                if(cellStyle != null) {
+                    tableParam.getCols().get(j).setCellStyle(cellStyle);
+                    //日期格式设置
+                    DataFormat dataFormat = workbook.createDataFormat();
+                    tableParam.getCols().get(j).setDataFormat(dataFormat);
+                }
+            }
+        }
+
         //当前数据处理到的行数,开始时为标题行的下一行（每个sheet重新计算）
         int currentRow = writeRow+1;
         addRows(workbook, sheet, currentRow, tableParam, exportStyle, data);
@@ -119,6 +133,20 @@ public class ExcelExport {
         //标题行设置、下拉列表设置
         rowConfig(workbook,sheet,tableParam);
 
+        //样式对象创建,可复用
+        for (int j=0;j<tableParam.getCols().size();j++) {
+            //样式获取设置
+            if(exportStyle != null){
+                CellStyle cellStyle = exportStyle.createCellStyle(workbook, tableParam.getCols().get(j).getColStyle());
+                if(cellStyle != null) {
+                    tableParam.getCols().get(j).setCellStyle(cellStyle);
+                    //日期格式设置
+                    DataFormat dataFormat = workbook.createDataFormat();
+                    tableParam.getCols().get(j).setDataFormat(dataFormat);
+                }
+            }
+        }
+
         //当前数据处理到的行数,开始时为标题行的下一行（每个sheet重新计算）
         int currentRow = writeRow+1;
         addRowsByMap(workbook, sheet, currentRow, tableParam, exportStyle, data);
@@ -160,6 +188,21 @@ public class ExcelExport {
         long page = total / pageSize;
         //当前页码
         int currentPage = 0;
+
+        //样式对象创建,可复用
+        for (int j=0;j<tableParam.getCols().size();j++) {
+            //样式获取设置
+            if(exportStyle != null){
+                CellStyle cellStyle = exportStyle.createCellStyle(workbook, tableParam.getCols().get(j).getColStyle());
+                if(cellStyle != null) {
+                    tableParam.getCols().get(j).setCellStyle(cellStyle);
+                    //日期格式设置
+                    DataFormat dataFormat = workbook.createDataFormat();
+                    tableParam.getCols().get(j).setDataFormat(dataFormat);
+                }
+            }
+        }
+
 
         //循环创建sheet
         for (int j = 0; j < sheetCount; j++) {
@@ -230,13 +273,6 @@ public class ExcelExport {
                 // 创建行的单元格
                 Cell cell = _row.createCell(j);
 
-                //样式获取设置
-                if(exportStyle != null){
-                    CellStyle cellStyle = exportStyle.createCellStyle(workbook, tableParam.getCols().get(j).getColStyle());
-                    if(cellStyle != null) {
-                        cell.setCellStyle(cellStyle);
-                    }
-                }
 
                 //判断列是否为设置公式的列,设置公式不根据key生成数据,直接写入公式即可
                 if(Utils.notEmpty(tableParam.getCols().get(j).getFormula())){
@@ -256,7 +292,7 @@ public class ExcelExport {
                 String format = tableParam.getCols().get(j).getFormat();//获取日期的格式化的格式
                 ConvertValue convertValue = tableParam.getCols().get(j).getConvertValue();//需要转换值的方法对象
 
-                setCell(workbook,cell,result,format,convertValue);
+                setCell(cell,result,tableParam.getCols().get(j));
             }
             currentRow++;
         }
@@ -287,14 +323,6 @@ public class ExcelExport {
                 // 创建行的单元格
                 Cell cell = _row.createCell(j);
 
-                //样式获取设置
-                if(exportStyle != null){
-                    CellStyle cellStyle = exportStyle.createCellStyle(workbook, tableParam.getCols().get(j).getColStyle());
-                    if(cellStyle != null) {
-                        cell.setCellStyle(cellStyle);
-                    }
-                }
-
                 //判断列是否为设置公式的列,设置公式不根据key生成数据,直接写入公式即可
                 if(Utils.notEmpty(tableParam.getCols().get(j).getFormula())){
                     cell.setCellFormula(tableParam.getCols().get(j).getFormula());
@@ -303,10 +331,7 @@ public class ExcelExport {
 
                 //根据Map的key获取value值
                 Object result = data.get(k).get(tableParam.getCols().get(j).getKey());
-
-                String format = tableParam.getCols().get(j).getFormat();//获取日期的格式化的格式
-                ConvertValue convertValue = tableParam.getCols().get(j).getConvertValue();//需要转换值的方法对象
-                setCell(workbook,cell,result,format,convertValue);
+                setCell(cell,result,tableParam.getCols().get(j));
             }
             currentRow++;
         }
@@ -369,10 +394,11 @@ public class ExcelExport {
 
     /**
      * 单元格cell值设置
-     * @param cell cell
-     * @param result result
+     * @param cell cell 列
+     * @param result result 值
+     * @param col 列s属性对象
      */
-    private static void setCell(Workbook workbook, Cell cell, Object result, String format, ConvertValue convertValue){
+    private static void setCell(Cell cell, Object result, Col col){
         //设置单元格值及属性
         String resultStr = String.valueOf(result);
         if(result instanceof String){
@@ -399,8 +425,8 @@ public class ExcelExport {
         }else if(result instanceof Short){
             if(result != null) {
                 //如果需要值替换
-                if (convertValue != null) {
-                    String val = convertValue.convert(result);
+                if (col.getConvertValue() != null) {
+                    String val = col.getConvertValue().convert(result);
                     cell.setCellValue(val);
                 } else {
                     cell.setCellValue(Short.parseShort(resultStr));
@@ -433,8 +459,8 @@ public class ExcelExport {
         }else if(result instanceof Boolean){
             if(result != null) {
                 //如果需要值替换
-                if (convertValue != null) {
-                    String val = convertValue.convert(result);
+                if (col.getConvertValue() != null) {
+                    String val = col.getConvertValue().convert(result);
                     cell.setCellValue(val);
                 } else {
                     cell.setCellValue(Boolean.parseBoolean(resultStr));
@@ -448,27 +474,25 @@ public class ExcelExport {
                 //日期直接用字符串输出
                 Date date = (Date) result;
                 String strDate;
-                if (Utils.notEmpty(format)) {
-                    SimpleDateFormat s = new SimpleDateFormat(format);
+                if (Utils.notEmpty(col.getFormat())) {
+                    SimpleDateFormat s = new SimpleDateFormat(col.getFormat());
                     strDate = s.format(date);
                 }else{
                     strDate = sdfTime.format(date);
                 }
-                DataFormat dataFormat = workbook.createDataFormat();
-                CellStyle cellStyle = workbook.createCellStyle();
-                cellStyle.setDataFormat(dataFormat.getFormat(format));
-                cell.setCellStyle(cellStyle);
-
                 cell.setCellValue(strDate);
             }else{
                 Date empty = null;
-
-                DataFormat dataFormat = workbook.createDataFormat();
-                CellStyle cellStyle = workbook.createCellStyle();
-                cellStyle.setDataFormat(dataFormat.getFormat(format));
-                cell.setCellStyle(cellStyle);
-
                 cell.setCellValue(empty);
+            }
+            if(Utils.notEmpty(col.getFormat())) {
+                if(col.getCellStyle() != null && col.getDataFormat() != null) {
+                    col.getCellStyle().setDataFormat(col.getDataFormat().getFormat(col.getFormat()));
+                }
+            }else{
+                if(col.getCellStyle() != null && col.getDataFormat() != null) {
+                    col.getCellStyle().setDataFormat(col.getDataFormat().getFormat(FORMAT));
+                }
             }
         }else if(result instanceof LocalDate){
             if(result != null) {
@@ -483,6 +507,15 @@ public class ExcelExport {
                 String empty = null;
                 cell.setCellValue(empty);
             }
+            if(Utils.notEmpty(col.getFormat())) {
+                if(col.getCellStyle() != null && col.getDataFormat() != null) {
+                    col.getCellStyle().setDataFormat(col.getDataFormat().getFormat(col.getFormat()));
+                }
+            }else{
+                if(col.getCellStyle() != null && col.getDataFormat() != null) {
+                    col.getCellStyle().setDataFormat(col.getDataFormat().getFormat(FORMAT));
+                }
+            }
         }else if(result instanceof LocalDateTime){
             if(result != null) {
                 LocalDateTime localDateTime = (LocalDateTime) result;
@@ -496,6 +529,15 @@ public class ExcelExport {
                 String empty = null;
                 cell.setCellValue(empty);
             }
+            if(Utils.notEmpty(col.getFormat())) {
+                if(col.getCellStyle() != null && col.getDataFormat() != null) {
+                    col.getCellStyle().setDataFormat(col.getDataFormat().getFormat(col.getFormat()));
+                }
+            }else{
+                if(col.getCellStyle() != null && col.getDataFormat() != null) {
+                    col.getCellStyle().setDataFormat(col.getDataFormat().getFormat(FORMAT2));
+                }
+            }
         }else{
             if(result != null) {
                 cell.setCellValue(resultStr);
@@ -504,6 +546,8 @@ public class ExcelExport {
                 cell.setCellValue(empty);
             }
         }
+        //样式
+        cell.setCellStyle(col.getCellStyle());
     }
 
     /**

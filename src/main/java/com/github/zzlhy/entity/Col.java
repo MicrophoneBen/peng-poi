@@ -2,6 +2,8 @@ package com.github.zzlhy.entity;
 
 
 import com.github.zzlhy.func.ConvertValue;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataFormat;
 
 /**
  * 导出数据列设置
@@ -29,6 +31,12 @@ public class Col {
 
     //列样式
     private ColStyleAbstract colStyle;
+
+    //列样式对象
+    private CellStyle cellStyle;
+
+    //日期格式化对象
+    private DataFormat dataFormat;
 
     //下拉列表的数组
     private String[] dropdownList;
@@ -253,5 +261,21 @@ public class Col {
     public Col setDropdownList(String[] dropdownList) {
         this.dropdownList = dropdownList;
         return this;
+    }
+
+    public CellStyle getCellStyle() {
+        return cellStyle;
+    }
+
+    public void setCellStyle(CellStyle cellStyle) {
+        this.cellStyle = cellStyle;
+    }
+
+    public DataFormat getDataFormat() {
+        return dataFormat;
+    }
+
+    public void setDataFormat(DataFormat dataFormat) {
+        this.dataFormat = dataFormat;
     }
 }
