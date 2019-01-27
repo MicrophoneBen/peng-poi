@@ -51,13 +51,13 @@
         <!--<repository>-->
             <!--<id>releases</id>-->
             <!--<name>User Project Release</name>-->
-            <!--<url>http://localhost:8081/nexus/content/repositories/releases/</url>-->
+            <!--<url>http://192.168.168.130:8081/repository/maven-releases/</url>-->
         <!--</repository>-->
 
         <!--<snapshotRepository>-->
             <!--<id>snapshots</id>-->
             <!--<name>User Project SNAPSHOTS</name>-->
-            <!--<url>http://localhost:8081/nexus/content/repositories/snapshots/</url>-->
+            <!--<url>http://192.168.168.130:8081/repository/maven-snapshots/</url>-->
         <!--</snapshotRepository>-->
     <!--</distributionManagement>-->
 
