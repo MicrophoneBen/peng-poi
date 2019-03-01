@@ -149,7 +149,6 @@ public class ExcelUtils {
      * @param clazz clazz
      * @return 读取的数据
      * @throws IllegalAccessException e
-     * @throws ParseException e
      * @throws IntrospectionException e
      * @throws IOException e
      * @throws InstantiationException e
@@ -167,7 +166,6 @@ public class ExcelUtils {
      * @param clazz 实体类
      * @return 读取的数据
      * @throws IllegalAccessException e
-     * @throws ParseException e
      * @throws IntrospectionException e
      * @throws IOException e
      * @throws InstantiationException e
@@ -190,7 +188,6 @@ public class ExcelUtils {
      * @param indexChangeHandler 执行记录数变化时的回调方法
      * @return 导入失败的数据
      * @throws IllegalAccessException e
-     * @throws ParseException e
      * @throws IntrospectionException e
      * @throws IOException e
      * @throws InstantiationException e
@@ -210,7 +207,6 @@ public class ExcelUtils {
      * @param validateDataHandler 验证数据方法
      * @return 导入失败的数据
      * @throws IllegalAccessException e
-     * @throws ParseException e
      * @throws IntrospectionException e
      * @throws IOException e
      * @throws InstantiationException e
@@ -229,7 +225,6 @@ public class ExcelUtils {
      * @param saveDataHandler 保存数据方法
      * @return 导入失败的数据
      * @throws IllegalAccessException e
-     * @throws ParseException e
      * @throws IntrospectionException e
      * @throws IOException e
      * @throws InstantiationException e

@@ -51,7 +51,6 @@ public class ExcelImport {
      * @throws InstantiationException e
      * @throws IntrospectionException e
      * @throws InvocationTargetException e
-     * @throws ParseException e
      * @throws InvalidFormatException e
      */
     public static List<Map<String,Object>> importExcel(InputStream stream, TableParam tableParam, Class<?> clazz, SaveDataHandler saveDataHandler, ValidateDataHandler validateDataHandler, IndexChangeHandler indexChangeHandler) throws IOException, IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException, InvalidFormatException {
@@ -101,10 +100,10 @@ public class ExcelImport {
                         setValue(writeMethod,propertyType,instance,cols.get(j).getFormat(),value);
                     } catch (ParseException e) {
                         e.printStackTrace();
-                        throw new CustomImportException("列："+cols.get(j).getTitle()+",值："+value+",格式不正确");
+                        throw new CustomImportException("col："+cols.get(j).getTitle()+",value："+value+",Incorrect format");
                     } catch (NumberFormatException e){
                         e.printStackTrace();
-                        throw new CustomImportException("列："+cols.get(j).getTitle()+",值："+value+",格式不正确");
+                        throw new CustomImportException("col："+cols.get(j).getTitle()+",value："+value+",Incorrect format");
                     }
                     objectMap.put(cols.get(j).getKey(),value);
                 }
@@ -157,7 +156,6 @@ public class ExcelImport {
      * @throws InstantiationException e
      * @throws IntrospectionException e
      * @throws InvocationTargetException e
-     * @throws ParseException e
      * @throws InvalidFormatException e
      */
     public static List<?> readExcel(InputStream stream,TableParam tableParam, Class<?> clazz) throws IOException, IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException, InvalidFormatException {
@@ -198,10 +196,10 @@ public class ExcelImport {
                     setValue(writeMethod,propertyType,instance,cols.get(j).getFormat(),value);
                 } catch (ParseException e) {
                     e.printStackTrace();
-                    throw new CustomImportException("列："+cols.get(j).getTitle()+",值："+value+",格式不正确");
+                    throw new CustomImportException("col："+cols.get(j).getTitle()+",value："+value+",Incorrect format");
                 } catch (NumberFormatException e){
                     e.printStackTrace();
-                    throw new CustomImportException("列："+cols.get(j).getTitle()+",值："+value+",格式不正确");
+                    throw new CustomImportException("col："+cols.get(j).getTitle()+",value："+value+",Incorrect format");
                 }
             }
 
