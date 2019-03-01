@@ -3,6 +3,7 @@ package com.github.zzlhy.main;
 
 import com.github.zzlhy.entity.Col;
 import com.github.zzlhy.entity.TableParam;
+import com.github.zzlhy.exception.CustomImportException;
 import com.github.zzlhy.func.ConvertValue;
 import com.github.zzlhy.func.IndexChangeHandler;
 import com.github.zzlhy.func.SaveDataHandler;
@@ -53,7 +54,7 @@ public class ExcelImport {
      * @throws ParseException e
      * @throws InvalidFormatException e
      */
-    public static List<Map<String,Object>> importExcel(InputStream stream, TableParam tableParam, Class<?> clazz, SaveDataHandler saveDataHandler, ValidateDataHandler validateDataHandler, IndexChangeHandler indexChangeHandler) throws IOException, IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException, ParseException, InvalidFormatException {
+    public static List<Map<String,Object>> importExcel(InputStream stream, TableParam tableParam, Class<?> clazz, SaveDataHandler saveDataHandler, ValidateDataHandler validateDataHandler, IndexChangeHandler indexChangeHandler) throws IOException, IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException, InvalidFormatException {
         //数据开始行
         int startRow=tableParam.getReadRow();
         //列参数配置
@@ -96,7 +97,15 @@ public class ExcelImport {
                     }
 
                     //对象属性赋值
-                    setValue(writeMethod,propertyType,instance,cols.get(j).getFormat(),value);
+                    try {
+                        setValue(writeMethod,propertyType,instance,cols.get(j).getFormat(),value);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        throw new CustomImportException("列："+cols.get(j).getTitle()+",值："+value+",格式不正确");
+                    } catch (NumberFormatException e){
+                        e.printStackTrace();
+                        throw new CustomImportException("列："+cols.get(j).getTitle()+",值："+value+",格式不正确");
+                    }
                     objectMap.put(cols.get(j).getKey(),value);
                 }
 
@@ -151,7 +160,7 @@ public class ExcelImport {
      * @throws ParseException e
      * @throws InvalidFormatException e
      */
-    public static List<?> readExcel(InputStream stream,TableParam tableParam, Class<?> clazz) throws IOException, IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException, ParseException, InvalidFormatException {
+    public static List<?> readExcel(InputStream stream,TableParam tableParam, Class<?> clazz) throws IOException, IllegalAccessException, InstantiationException, IntrospectionException, InvocationTargetException, InvalidFormatException {
         List<Object> list=new ArrayList();
         Workbook workbook=WorkbookFactory.create(stream);
         //获取第一个sheet
@@ -185,7 +194,15 @@ public class ExcelImport {
                 }
 
                 //对象属性赋值
-                setValue(writeMethod,propertyType,instance,cols.get(j).getFormat(),value);
+                try {
+                    setValue(writeMethod,propertyType,instance,cols.get(j).getFormat(),value);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    throw new CustomImportException("列："+cols.get(j).getTitle()+",值："+value+",格式不正确");
+                } catch (NumberFormatException e){
+                    e.printStackTrace();
+                    throw new CustomImportException("列："+cols.get(j).getTitle()+",值："+value+",格式不正确");
+                }
             }
 
             list.add(instance);

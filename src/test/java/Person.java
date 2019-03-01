@@ -57,6 +57,9 @@ public class Person {
         this.createDate = createDate;
     }
 
+    public Person() {
+    }
+
     public Person(String name, Integer age, Date birthday, Boolean active, LocalDateTime createDate) {
         this.name = name;
         this.age = age;

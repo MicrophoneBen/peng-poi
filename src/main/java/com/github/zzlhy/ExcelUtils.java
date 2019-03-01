@@ -156,7 +156,7 @@ public class ExcelUtils {
      * @throws InvalidFormatException e
      * @throws InvocationTargetException e
      */
-    public static List<?> readExcel(InputStream stream,TableParam tableParam, Class<?> clazz) throws IllegalAccessException, ParseException, IntrospectionException, IOException, InstantiationException, InvalidFormatException, InvocationTargetException {
+    public static List<?> readExcel(InputStream stream,TableParam tableParam, Class<?> clazz) throws IllegalAccessException, IntrospectionException, IOException, InstantiationException, InvalidFormatException, InvocationTargetException {
         return ExcelImport.readExcel(stream,tableParam,clazz);
     }
 
@@ -174,7 +174,7 @@ public class ExcelUtils {
      * @throws InvalidFormatException e
      * @throws InvocationTargetException e
      */
-    public static List<?> readExcel(String filePath,TableParam tableParam, Class<?> clazz) throws IllegalAccessException, ParseException, IntrospectionException, IOException, InstantiationException, InvalidFormatException, InvocationTargetException {
+    public static List<?> readExcel(String filePath,TableParam tableParam, Class<?> clazz) throws IllegalAccessException, IntrospectionException, IOException, InstantiationException, InvalidFormatException, InvocationTargetException {
         FileInputStream stream=new FileInputStream(filePath);
         return ExcelImport.readExcel(stream,tableParam,clazz);
     }
@@ -197,7 +197,7 @@ public class ExcelUtils {
      * @throws InvalidFormatException e
      * @throws InvocationTargetException e
      */
-    public static List<Map<String,Object>> excelImport(InputStream stream, TableParam tableParam, Class<?> clazz, SaveDataHandler saveDataHandler, ValidateDataHandler validateDataHandler, IndexChangeHandler indexChangeHandler) throws IllegalAccessException, ParseException, IntrospectionException, IOException, InstantiationException, InvalidFormatException, InvocationTargetException {
+    public static List<Map<String,Object>> excelImport(InputStream stream, TableParam tableParam, Class<?> clazz, SaveDataHandler saveDataHandler, ValidateDataHandler validateDataHandler, IndexChangeHandler indexChangeHandler) throws IllegalAccessException, IntrospectionException, IOException, InstantiationException, InvalidFormatException, InvocationTargetException {
         return ExcelImport.importExcel(stream,tableParam,clazz,saveDataHandler,validateDataHandler,indexChangeHandler);
     }
 
@@ -217,7 +217,7 @@ public class ExcelUtils {
      * @throws InvalidFormatException e
      * @throws InvocationTargetException e
      */
-    public static List<?> excelImport(InputStream stream, TableParam tableParam, Class<?> clazz, SaveDataHandler saveDataHandler, ValidateDataHandler validateDataHandler) throws IllegalAccessException, ParseException, IntrospectionException, IOException, InstantiationException, InvalidFormatException, InvocationTargetException {
+    public static List<?> excelImport(InputStream stream, TableParam tableParam, Class<?> clazz, SaveDataHandler saveDataHandler, ValidateDataHandler validateDataHandler) throws IllegalAccessException, IntrospectionException, IOException, InstantiationException, InvalidFormatException, InvocationTargetException {
         return ExcelImport.importExcel(stream,tableParam,clazz,saveDataHandler,validateDataHandler,null);
     }
 
@@ -236,7 +236,7 @@ public class ExcelUtils {
      * @throws InvalidFormatException e
      * @throws InvocationTargetException e
      */
-    public static List<?> excelImport(InputStream stream, TableParam tableParam, Class<?> clazz, SaveDataHandler saveDataHandler) throws IllegalAccessException, ParseException, IntrospectionException, IOException, InstantiationException, InvalidFormatException, InvocationTargetException {
+    public static List<?> excelImport(InputStream stream, TableParam tableParam, Class<?> clazz, SaveDataHandler saveDataHandler) throws IllegalAccessException, IntrospectionException, IOException, InstantiationException, InvalidFormatException, InvocationTargetException {
         return ExcelImport.importExcel(stream,tableParam,clazz,saveDataHandler,null,null);
     }
 
