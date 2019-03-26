@@ -96,14 +96,19 @@ public class ExcelImport {
                     }
 
                     //对象属性赋值
+                    StringBuilder exMsg = new StringBuilder(row.getRowNum());
+                    exMsg.append(",");
+                    exMsg.append(cols.get(j).getTitle());
+                    exMsg.append(",");
+                    exMsg.append(value);
                     try {
                         setValue(writeMethod,propertyType,instance,cols.get(j).getFormat(),value);
                     } catch (ParseException e) {
                         e.printStackTrace();
-                        throw new CustomImportException("col："+cols.get(j).getTitle()+",value："+value+",Incorrect format");
+                        throw new CustomImportException(exMsg.toString());
                     } catch (NumberFormatException e){
                         e.printStackTrace();
-                        throw new CustomImportException("col："+cols.get(j).getTitle()+",value："+value+",Incorrect format");
+                        throw new CustomImportException(exMsg.toString());
                     }
                     objectMap.put(cols.get(j).getKey(),value);
                 }
@@ -192,14 +197,19 @@ public class ExcelImport {
                 }
 
                 //对象属性赋值
+                StringBuilder exMsg = new StringBuilder(row.getRowNum());
+                exMsg.append(",");
+                exMsg.append(cols.get(j).getTitle());
+                exMsg.append(",");
+                exMsg.append(value);
                 try {
                     setValue(writeMethod,propertyType,instance,cols.get(j).getFormat(),value);
                 } catch (ParseException e) {
                     e.printStackTrace();
-                    throw new CustomImportException("col："+cols.get(j).getTitle()+",value："+value+",Incorrect format");
+                    throw new CustomImportException(exMsg.toString());
                 } catch (NumberFormatException e){
                     e.printStackTrace();
-                    throw new CustomImportException("col："+cols.get(j).getTitle()+",value："+value+",Incorrect format");
+                    throw new CustomImportException(exMsg.toString());
                 }
             }
 
