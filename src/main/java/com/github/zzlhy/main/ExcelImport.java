@@ -96,7 +96,7 @@ public class ExcelImport {
                     }
 
                     //对象属性赋值
-                    StringBuilder exMsg = new StringBuilder(row.getRowNum());
+                    StringBuilder exMsg = new StringBuilder(i);
                     exMsg.append(",");
                     exMsg.append(cols.get(j).getTitle());
                     exMsg.append(",");
@@ -197,7 +197,7 @@ public class ExcelImport {
                 }
 
                 //对象属性赋值
-                StringBuilder exMsg = new StringBuilder(row.getRowNum());
+                StringBuilder exMsg = new StringBuilder(i);
                 exMsg.append(",");
                 exMsg.append(cols.get(j).getTitle());
                 exMsg.append(",");
