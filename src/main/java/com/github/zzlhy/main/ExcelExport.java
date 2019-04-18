@@ -182,10 +182,16 @@ public class ExcelExport {
             }
         }
 
-        //分页查询时的每页条数,固定1000条,外部查询时也需要每次为1000条的返回
-        int pageSize = 1000;
+        //分页查询时的每页条数,固定5000条,外部查询时也需要每次为5000条的返回
+        int pageSize = 5000;
         //总页数计算
-        long page = total / pageSize;
+        long page;
+        if(total % pageSize == 0){
+            page = total / pageSize;
+        }else{
+            page = total / pageSize + 1;
+        }
+
         //当前页码
         int currentPage = 0;
 
