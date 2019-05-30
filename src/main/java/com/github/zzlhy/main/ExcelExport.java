@@ -404,7 +404,7 @@ public class ExcelExport {
 
     //默认日期转换格式
     private static final String FORMAT="yyyy/m/d";
-    private static final String FORMAT2="yyyy/m/d h:mm:ss;@";
+    private static final String FORMAT2="yyyy/m/d h:mm;@";
     private static SimpleDateFormat sdfDate= new SimpleDateFormat(FORMAT);
     private static SimpleDateFormat sdfTime= new SimpleDateFormat(FORMAT2);
 
