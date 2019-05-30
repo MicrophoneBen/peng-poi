@@ -1,19 +1,24 @@
 package com.github.zzlhy.main;
 
 
-import com.github.zzlhy.entity.*;
-import com.github.zzlhy.entity.Color;
+import com.github.zzlhy.entity.Col;
+import com.github.zzlhy.entity.DropdownParam;
+import com.github.zzlhy.entity.ExcelType;
+import com.github.zzlhy.entity.TableParam;
 import com.github.zzlhy.func.ConvertValue;
 import com.github.zzlhy.func.GeneratorDataHandler;
-import com.github.zzlhy.util.Lists;
 import com.github.zzlhy.util.Utils;
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.hssf.usermodel.DVConstraint;
+import org.apache.poi.hssf.usermodel.HSSFDataValidation;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFDataValidation;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -182,8 +187,8 @@ public class ExcelExport {
             }
         }
 
-        //分页查询时的每页条数,固定5000条,外部查询时也需要每次为5000条的返回
-        int pageSize = 5000;
+        //分页查询时的每页条数,固定10000条,外部查询时也需要每次为10000条的返回
+        int pageSize = 10000;
         //总页数计算
         long page;
         if(total % pageSize == 0){
@@ -191,22 +196,27 @@ public class ExcelExport {
         }else{
             page = total / pageSize + 1;
         }
-
         //当前页码
         int currentPage = 0;
 
         //样式对象创建,可复用
         for (int j=0;j<tableParam.getCols().size();j++) {
+            if(tableParam.getCols().get(j).getCellStyle() == null){
+                //单元格样式
+                CellStyle cellStyle = workbook.createCellStyle();
+                tableParam.getCols().get(j).setCellStyle(cellStyle);
+            }
+
             //样式获取设置
             if(exportStyle != null){
                 CellStyle cellStyle = exportStyle.createCellStyle(workbook, tableParam.getCols().get(j).getColStyle());
                 if(cellStyle != null) {
                     tableParam.getCols().get(j).setCellStyle(cellStyle);
-                    //日期格式设置
-                    DataFormat dataFormat = workbook.createDataFormat();
-                    tableParam.getCols().get(j).setDataFormat(dataFormat);
                 }
             }
+            //日期格式设置
+            DataFormat dataFormat = workbook.createDataFormat();
+            tableParam.getCols().get(j).setDataFormat(dataFormat);
         }
 
 
@@ -393,8 +403,8 @@ public class ExcelExport {
     }
 
     //默认日期转换格式
-    private static final String FORMAT="yyyy-MM-dd";
-    private static final String FORMAT2="yyyy-MM-dd HH:mm:ss";
+    private static final String FORMAT="yyyy/m/d";
+    private static final String FORMAT2="yyyy/m/d h:mm:ss;@";
     private static SimpleDateFormat sdfDate= new SimpleDateFormat(FORMAT);
     private static SimpleDateFormat sdfTime= new SimpleDateFormat(FORMAT2);
 
@@ -479,14 +489,14 @@ public class ExcelExport {
             if(result != null) {
                 //日期直接用字符串输出
                 Date date = (Date) result;
-                String strDate;
-                if (Utils.notEmpty(col.getFormat())) {
-                    SimpleDateFormat s = new SimpleDateFormat(col.getFormat());
-                    strDate = s.format(date);
-                }else{
-                    strDate = sdfTime.format(date);
-                }
-                cell.setCellValue(strDate);
+                //String strDate;
+                //if (Utils.notEmpty(col.getFormat())) {
+                //    SimpleDateFormat s = new SimpleDateFormat(col.getFormat());
+                //    strDate = s.format(date);
+                //}else{
+                //    strDate = sdfTime.format(date);
+                //}
+                cell.setCellValue(date);
             }else{
                 Date empty = null;
                 cell.setCellValue(empty);
@@ -497,7 +507,7 @@ public class ExcelExport {
                 }
             }else{
                 if(col.getCellStyle() != null && col.getDataFormat() != null) {
-                    col.getCellStyle().setDataFormat(col.getDataFormat().getFormat(FORMAT));
+                    col.getCellStyle().setDataFormat(col.getDataFormat().getFormat(FORMAT2));
                 }
             }
         }else if(result instanceof LocalDate){
@@ -507,8 +517,8 @@ public class ExcelExport {
                 ZoneId zoneId = ZoneId.systemDefault();
                 ZonedDateTime zdt = localDate.atStartOfDay(zoneId);
                 Date date = Date.from(zdt.toInstant());
-                String strDate = sdfDate.format(date);
-                cell.setCellValue(strDate);
+                //String strDate = sdfDate.format(date);
+                cell.setCellValue(date);
             }else{
                 String empty = null;
                 cell.setCellValue(empty);
@@ -529,8 +539,8 @@ public class ExcelExport {
                 ZoneId zoneId = ZoneId.systemDefault();
                 ZonedDateTime zdt =localDateTime.atZone(zoneId);
                 Date date = Date.from(zdt.toInstant());
-                String strDate = sdfTime.format(date);
-                cell.setCellValue(strDate);
+                //String strDate = sdfTime.format(date);
+                cell.setCellValue(date);
             }else{
                 String empty = null;
                 cell.setCellValue(empty);
